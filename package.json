@@ -1,0 +1,19 @@
+{
+  "name": "aicompared",
+  "version": "0.1.0",
+  "description": "Compare responses across AI providers",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "config:check": "tsx src/checkConfig.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0"
+  }
+}
