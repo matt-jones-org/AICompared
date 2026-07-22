@@ -1,0 +1,27 @@
+# systemd unit for AICompared on a Compute Engine VM.
+# Install: sudo cp aicompared.service /etc/systemd/system/ && sudo systemctl enable --now aicompared
+[Unit]
+Description=AICompared HTTP server
+After=network.target
+
+[Service]
+Type=simple
+User=aicompared
+WorkingDirectory=/opt/aicompared
+# API keys live in an env file readable only by the service user:
+#   sudo install -m 600 -o aicompared /dev/null /opt/aicompared/.env
+EnvironmentFile=/opt/aicompared/.env
+Environment=PORT=8080
+ExecStart=/usr/bin/node dist/server.js
+Restart=on-failure
+RestartSec=3
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/aicompared
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

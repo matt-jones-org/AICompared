@@ -7,7 +7,9 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "config:check": "tsx src/checkConfig.ts",
-    "ask:gemini": "tsx src/askGemini.ts"
+    "ask:gemini": "tsx src/askGemini.ts",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "@google/genai": "^2.13.0",
