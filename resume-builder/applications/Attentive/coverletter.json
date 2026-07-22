@@ -1,0 +1,24 @@
+{
+  "type": "letterhead",
+  "tagline": "SENIOR CUSTOMER SUPPORT | COMPLEX ESCALATIONS | AI-ENABLED WORKFLOWS | B2B SAAS",
+  "prepared_for": "ATTENTIVE",
+  "re": "SENIOR CUSTOMER SUPPORT SPECIALIST",
+  "company_slug": "Attentive",
+  "salutation": "Dear Attentive Hiring Team,",
+  "paragraphs": [
+    "You describe this role as the face of the product experience — the person who owns the hardest customer questions from first message to final resolution. That has been my exact job for four years. As a Senior Support Associate at Maven Clinic, a 24/7 B2B SaaS platform, I was the first line of escalation for our most complex technical issues, resolving them across chat, email, and phone — often overnight, as the most senior person online — while coordinating with Product, Engineering, Legal, and Payment Operations to turn customer pain into bug reports and shipped fixes. Bridging the gap between customers and the product team isn't a line in a posting to me; it's how I worked every night.",
+    "Attentive is an AI marketing platform, and I'm the rare support specialist who implements AI rather than just tolerating it. I led our Support organization's adoption of Guru AI — group trainings and 1:1 coaching for 13 teammates, 3 managers, and a director, with a measured 15%+ efficiency gain — and when manual QA grading proved too subjective, I built CareBot, an AI-assisted QA system trained on our SOPs that's still in production today. Off the clock I build with Claude at matt-jones.org and am currently self-teaching SQL. A platform selling AI-powered personalization deserves support specialists who genuinely understand the technology.",
+    "The \"Plus-One\" responsibilities are the part of this posting that made me want to apply, because I've been collecting plus-ones for years: 250+ support macros and SOPs that cut handle time org-wide, a nightly \"Night Watch\" briefing that closed an information gap between teams, nearly 70 candidate interviews, and 15 new teammates onboarded and trained. I did all of it while posting numbers like these:",
+    {
+      "stats": [
+        { "value": "98", "unit": "%", "label": "CSAT · 90% TARGET" },
+        { "value": "60", "unit": "/DAY", "label": "CHATS · 40 TARGET" },
+        { "value": "8", "unit": " MIN", "label": "HANDLE TIME · 12 TARGET" },
+        { "value": "4", "unit": " YRS", "label": "OVERNIGHT · SELF-DIRECTED" }
+      ]
+    },
+    "Your values say to champion the customer and act like an owner — support is where those two meet. Every chat is somebody's revenue on the line, and every escalation is a chance to make the product better. I believe in providing high-quality work no matter the circumstances — I have the ability to make a difference for Attentive's customers, so I will."
+  ],
+  "closing": "Sincerely,",
+  "footer": "HOUSTON, TX · REMOTE-READY · MATT-JONES.ORG"
+}
