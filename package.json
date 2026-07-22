@@ -6,9 +6,11 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "config:check": "tsx src/checkConfig.ts"
+    "config:check": "tsx src/checkConfig.ts",
+    "ask:gemini": "tsx src/askGemini.ts"
   },
   "dependencies": {
+    "@google/genai": "^2.13.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
