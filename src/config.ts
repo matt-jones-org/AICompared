@@ -60,3 +60,21 @@ export function isConfigured(provider: Provider): boolean {
 export function configuredProviders(): Provider[] {
   return PROVIDERS.filter(isConfigured);
 }
+
+/** Google OAuth client credentials, for a user-delegated authorization flow. */
+export interface GoogleOAuthConfig {
+  clientId: string;
+  clientSecret: string;
+}
+
+/**
+ * Return the Google OAuth client credentials, or `undefined` if either the
+ * client ID or client secret is missing. This is for a user-delegated OAuth
+ * flow only — for standard Gemini model calls, use `getApiKey("google")`.
+ */
+export function getGoogleOAuthConfig(): GoogleOAuthConfig | undefined {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET?.trim();
+  if (!clientId || !clientSecret) return undefined;
+  return { clientId, clientSecret };
+}
