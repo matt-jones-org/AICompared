@@ -17,9 +17,12 @@ content-only work: tailor JSON, run `build.py`, deliver PDFs.
    emphasizes.
 3. **Tailor the resume.** Copy `resume-builder/examples/resume_base.json`
    (Matt's master resume) and adjust for the posting: rewrite the `tagline`,
-   re-angle the Professional Summary, reorder/trim competency groups and
-   bullets to foreground what the posting asks for. Keep it honest — reframe
-   and reprioritize existing facts, never invent experience. Type stays
+   re-angle the Professional Summary, reorder/trim competency items and
+   bullets to foreground what the posting asks for. **What stays fixed unless
+   Matt explicitly says otherwise: the section headings, the competency group
+   labels (Data & Analysis, Healthcare Operations, AI Workflows, Tools,
+   Performance), and every job title.** Keep it honest — reframe and
+   reprioritize existing facts, never invent experience. Type stays
    `"resume"`. Target two pages; cut bullets if it spills to three.
 4. **Choose the cover-letter template** by analyzing the company and posting
    for seriousness and professionalism (it should be pretty obvious; when in

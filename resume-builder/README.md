@@ -29,7 +29,9 @@ schema documentation:
 
 - `resume_base.json` — Matt's full master resume (BRG version). **Start every
   tailored resume by copying this** and adjusting the tagline, summary,
-  competency emphasis, and bullet order for the posting.
+  competency emphasis, and bullet order for the posting. Section headings,
+  competency group labels, and job titles stay exactly as they are in the
+  master unless Matt explicitly asks to change them.
 - `coverletter_brg.json` — boring cover letter (BRG, Senior Associate).
 - `letterhead_thumbtack.json` — green letterhead (Thumbtack), including the
   stat-band block.
