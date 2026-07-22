@@ -1,0 +1,162 @@
+{
+  "type": "resume",
+  "company_slug": "Base",
+  "tagline": "Healthcare Operations & Data Analysis | AI-Enabled Workflows | 4 Years B2B Healthcare SaaS | Quantitative Modeling",
+  "sections": [
+    {
+      "heading": "Professional Summary",
+      "text": "Analyst-minded professional with 6+ years across healthcare technology and client operations, including 4 years at Maven Clinic supporting a 24/7 B2B healthcare platform. Hands-on daily experience with healthcare billing, benefits reimbursement (Maven Wallet SME), HIPAA-protected data, and coordination across Clinical, Payment Ops, Legal, Product, and Engineering teams. Pairs frontline healthcare operations with data analysis — collecting, cleaning, and validating data and building statistical models, dashboards, and reports (including Monte Carlo simulation) that structure ambiguous problems into clear, defensible outputs. Led AI implementation (Guru AI) that measurably improved team efficiency 15%+. Advanced Excel and Google Sheets; working knowledge of SQL, Access, and Tableau; degree coursework in economics, data science, and statistics with a quantitative capstone. High attention to detail, consistent quality-control habits, and on-time, accurate delivery under strict SLAs. I believe in providing high-quality work no matter the circumstances — I have the ability to make a difference, so I will."
+    },
+    {
+      "heading": "Core Competencies",
+      "competencies": [
+        {
+          "label": "Data & Analysis",
+          "items": ["Data Collection, Cleaning & Validation", "Statistical Analysis & Quantitative Modeling", "Monte Carlo Simulation", "Data Visualization & Dashboards", "Relational Databases", "Advanced Spreadsheets (Excel, Google Sheets)", "SQL", "Microsoft Access", "Tableau", "Research & Synthesis", "Quality Control & Validation"]
+        },
+        {
+          "label": "Healthcare Operations",
+          "items": ["B2B Healthcare SaaS Support", "Billing & Benefits Reimbursement", "Escalation Management", "Cross-Departmental Coordination", "HIPAA Compliance", "SLA Adherence & Tight Deadlines", "Records Management, Documentation & Reporting", "Training & Mentorship", "Prioritization & Multitasking"]
+        },
+        {
+          "label": "AI Workflows",
+          "items": ["AI-Assisted Development (Claude)", "Prompt Engineering", "LLM Evaluation & Comparison", "AI Tool Implementation, Training & Adoption (Guru AI)", "AI-Enabled Workflows"]
+        },
+        {
+          "label": "Tools",
+          "items": ["Microsoft Office (Excel, Word)", "Google Workspace (Sheets)", "Tableau", "Microsoft Access", "SQL", "Salesforce", "Zendesk", "Jira", "Slack", "Notion", "Claude", "Quick to Master New Systems"]
+        },
+        {
+          "label": "Performance",
+          "items": ["98% CSAT (Target: 90%)", "~8-Min Average Handle Time (Target: 12)", "60 Daily Chats (Target: 40)"]
+        }
+      ]
+    },
+    {
+      "heading": "Professional Experience",
+      "entries": [
+        {
+          "company": "Maven Clinic  |  New York, NY (Remote, based in Houston, TX)",
+          "dates": "Mar 2022 – Apr 2026",
+          "note": "Promoted from Care Support Representative to Senior Support Associate in November 2023.",
+          "roles": [
+            {
+              "title": "Senior Support Associate",
+              "dates": "Nov 2023 – Apr 2026",
+              "bullets": [
+                "Primary overnight escalation resource for a 24/7 healthcare technology platform — independently resolved complex member, provider, partner, and operational issues while meeting strict SLA targets and deadlines with minimal rework.",
+                "Subject matter expert for Maven Wallet, Maven's healthcare benefits reimbursement product — guided members through complex billing and reimbursement workflows and resolved payment and account issues.",
+                "Named top Support performer during 2026 Launch season — managed 300+ weekly interactions with near-100% satisfaction while prioritizing multiple concurrent workstreams and self-driven projects.",
+                "Created 250+ support macros and standard operating procedures (SOPs), maintaining a documented system of records that improved consistency and reduced handle time org-wide.",
+                "Mentored and coached 12+ new representatives — delegating work, reviewing case quality, and providing feedback on complex cases and escalations.",
+                "Coordinated with Engineering, Product, Legal, Clinical, and Payment Operations to resolve escalated tickets, manage urgent requests, report bugs, and deliver consistent, on-time outcomes."
+              ]
+            },
+            {
+              "title": "Care Support Representative",
+              "dates": "Mar 2022 – Nov 2023",
+              "bullets": [
+                "Inaugural member of Maven's Overnight Support Team; managed up to 70 daily interactions via phone, chat, and email while maintaining 98% customer satisfaction.",
+                "Consistently ranked among Maven's highest performers for productivity, quality assurance scores, and member experience.",
+                "Investigated and resolved account, technical, and billing issues, coordinating with stakeholders across departments to close cases accurately and quickly.",
+                "Maintained meticulous case documentation and data entry while handling HIPAA-protected health information."
+              ]
+            }
+          ]
+        },
+        {
+          "company": "Cheer Factory FFS  |  Cypress, TX",
+          "roles": [
+            {
+              "title": "Office Manager (Customer Service)",
+              "dates": "Mar 2021 – Feb 2022",
+              "bullets": [
+                "First point of contact for families of 200+ active athletes — resolved billing and registration issues, processed payments, and maintained accurate customer records in Microsoft Access.",
+                "Managed high volumes of inbound calls and walk-in traffic while keeping intake, registration, and administrative processes running smoothly."
+              ]
+            }
+          ]
+        },
+        {
+          "company": "Outreach Strategists  |  Houston, TX (Hybrid)",
+          "roles": [
+            {
+              "title": "Administrative Assistant / Support Specialist",
+              "dates": "Jan 2020 – Mar 2021",
+              "bullets": [
+                "Promoted from intern to full-time role supporting the executive assistant to the CEO.",
+                "Led a team of 6 in building and maintaining a comprehensive contact database (CRM), keeping records current, accurate, and report-ready for outreach and campaign operations.",
+                "Coordinated scheduling, project tracking, and stakeholder communications by phone and email."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Selected Projects & Achievements",
+      "entries": [
+        {
+          "title": "AI Implementation & Digital Enablement — Guru AI (Maven Clinic)",
+          "dates": "Feb 2025 – Dec 2025",
+          "bullets": [
+            "Led Support-org adoption of Guru AI as internal implementation lead and SME, quantifiably improving team efficiency by 15%+.",
+            "Hosted group trainings and 1:1 coaching for 13 teammates, 3 managers, and 1 director; developed best practices and knowledge-management strategies adopted into day-to-day operations."
+          ]
+        },
+        {
+          "title": "matt-jones.org — Interactive Portfolio",
+          "dates": "Apr 2026 – Present",
+          "bullets": [
+            "Mastered AI-assisted development — most notably building with Claude — and launched matt-jones.org as a live home for interactive data projects.",
+            "Baseball analytics: live MLB standings dashboard with Monte Carlo playoff simulations and an advanced-stats player leaderboard.",
+            "Geospatial: geofence QA/QC triage simulator with real geometry validation — hands-on data quality-control work.",
+            "Currently self-teaching SQL by building out the site's data layer."
+          ]
+        },
+        {
+          "title": "Training, Hiring & Knowledge Management (Maven Clinic)",
+          "dates": "Jun 2024 – Apr 2026",
+          "bullets": [
+            "Interviewed nearly 70 Support candidates — evaluating technical assessments and providing hiring recommendations to leadership — and helped onboard and train 15 new teammates."
+          ]
+        },
+        {
+          "title": "Night Watch Knowledge-Sharing Initiative (Maven Clinic)",
+          "dates": "Jun 2023 – Apr 2026",
+          "bullets": [
+            "Designed and ran “Night Watch,” synthesizing updates from multiple channels into concise, actionable overnight briefings and status reports that closed a critical information gap between teams."
+          ]
+        },
+        {
+          "title": "CRM Implementation — Salesforce (Outreach Strategists)",
+          "dates": "Mar 2020 – Mar 2021",
+          "bullets": [
+            "Audited legacy contact records — verifying, correcting, and enriching data into an accurate master database — then built it into Salesforce as a fluidly updatable relational CRM, with Tableau reports on top for campaign reporting."
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Education",
+      "entries": [
+        {
+          "company": "University of Houston  |  Houston, TX",
+          "dates": "Aug 2018 – May 2020",
+          "subtitle": "Bachelor of Science, Political Science; Minor in Sociology — Graduated Magna Cum Laude, 3.74 GPA",
+          "bullets": [
+            "Coursework included economics, data science, and statistics; degree plan emphasized quantitative modeling and research design.",
+            "Capstone: in-depth quantitative analysis of the relationship between labor unions and the middle class, selected for presentation to faculty across the College of Liberal Arts and Social Sciences (CLASS).",
+            "Built statistical models turning qualitative concepts into measurable proxy variables for causal and longitudinal analysis, including a multi-decade study of Supreme Court voting behavior.",
+            "Dean's List all 4 semesters with 18+ hour course loads; earned degree in 3 years on an accelerated path."
+          ]
+        },
+        {
+          "company": "Lone Star College  |  Cypress, TX",
+          "dates": "Summer 2017 – Fall 2018",
+          "subtitle": "Coursework toward bachelor's degree; Dean's List both semesters."
+        }
+      ]
+    }
+  ]
+}

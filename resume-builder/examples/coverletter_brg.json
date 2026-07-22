@@ -1,0 +1,16 @@
+{
+  "type": "coverletter",
+  "date": "July 22, 2026",
+  "company_slug": "BRG",
+  "recipient": ["Berkeley Research Group — Integrated Health Solutions"],
+  "re": "Senior Associate, Managed Care (JR100693)",
+  "salutation": "Dear BRG Integrated Health Solutions team,",
+  "paragraphs": [
+    "When Virginia Zhang, Product Support Analyst II at BRG, offered to refer me to the Managed Care team, the fit clicked immediately: I've spent the last four years on the front lines of healthcare reimbursement, and I want to work upstream on the strategy and analysis that shape it.",
+    "At Maven Clinic, a 24/7 B2B healthcare technology platform, I served as subject matter expert for Maven Wallet — Maven's benefits reimbursement product — guiding members through complex billing and reimbursement workflows and coordinating daily with Payment Operations, Clinical, and Legal teams. I know what payer-provider dynamics look like when they reach an actual person, because I was the one on the phone at 3 a.m. explaining them. That perspective — where contracts and pricing decisions actually land — is what I'd bring to the table alongside the analysis.",
+    "The analysis is the part I love most. My degree emphasized quantitative modeling, with coursework in economics, data science, and statistics; my capstone — a quantitative study of labor unions and the middle class — was selected for presentation across UH's College of Liberal Arts and Social Sciences. I built longitudinal models by developing proxy variables to operationalize qualitative concepts, and I've kept those muscles sharp: my portfolio at matt-jones.org includes Monte Carlo simulations and interactive dashboards, and I'm currently self-teaching SQL.",
+    "Your AI & Digital Solutions offering is where my recent work fits best. At Maven, I led our Support organization's adoption of Guru AI — training 13 teammates, 3 managers, and a director, and quantifiably improving efficiency by over 15% — and built an AI-based quality-assurance system that remains in production today. I've done AI enablement inside a healthcare company; I'd love to help BRG's clients do the same.",
+    "I believe analysis only matters if it makes a real difference for the client — and I have the ability to make that difference. So I will."
+  ],
+  "closing": "Thank you for your consideration,"
+}

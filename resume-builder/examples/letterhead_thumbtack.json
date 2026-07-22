@@ -1,0 +1,25 @@
+{
+  "type": "letterhead",
+  "tagline": "TECHNICAL SUPPORT SPECIALIST | AI-ENABLED WORKFLOWS | ESCALATION MANAGEMENT | SENIOR CUSTOMER SERVICE",
+  "prepared_for": "THUMBTACK",
+  "re": "REVIEW REMOVAL EXPERT",
+  "date": "JULY 22, 2026",
+  "company_slug": "Thumbtack",
+  "salutation": "Dear Thumbtack Hiring Team,",
+  "paragraphs": [
+    "For the past four years, I've done a version of this job every single day. As a Senior Support Associate at Maven Clinic, I owned quality assurance for our Support organization — which meant reading other people's words at volume, holding them against a written standard, and documenting exactly why something did or didn't clear the bar. When manual grading proved too subjective, I built CareBot, an AI-assisted QA system trained on our SOPs and policies that removed reviewer bias from the process entirely. It's still in use today. Evaluating content against platform guidelines — accurately, consistently, and with a paper trail — is the core skill of review moderation, and it's the one my career is built on.",
+    "The investigative side of this role is where I'd thrive most. My academic background is in statistics and quantitative modeling, and my professional instinct is the same: connect timestamps, account activity, and behavioral patterns until the data tells you whether a review is genuine. At Maven, that instinct once let me trace a wave of seemingly unrelated customer reports back to a major infrastructure outage in real time — pattern recognition under pressure, documented and escalated cleanly.",
+    "I also know how to produce in a fast-paced, independent environment. I spent four years on overnight shifts — often the most senior person online — while posting numbers like these:",
+    {
+      "stats": [
+        { "value": "98", "unit": "%", "label": "CSAT · 90% TARGET" },
+        { "value": "60", "unit": "/DAY", "label": "CHATS · 40 TARGET" },
+        { "value": "8", "unit": " MIN", "label": "HANDLE TIME · 12 TARGET" },
+        { "value": "4", "unit": " YRS", "label": "OVERNIGHT · SELF-DIRECTED" }
+      ]
+    },
+    "Reviews are livelihoods. For the pros who build their businesses on Thumbtack, a fake review can sink an honest operation — and a wrongly removed genuine one can mislead the customers who count on the platform. I believe in getting that call right every time, and I'd love to make those calls for Thumbtack."
+  ],
+  "closing": "Sincerely,",
+  "footer": "HOUSTON, TX · REMOTE-READY · MATT-JONES.ORG"
+}
