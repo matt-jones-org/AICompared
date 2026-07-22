@@ -18,6 +18,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Local scratch / working files (not part of the project)
+scratchpad/
+
 # Editor / OS
 .DS_Store
 .idea/
