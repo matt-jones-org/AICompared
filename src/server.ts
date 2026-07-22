@@ -2,6 +2,7 @@
  * Minimal HTTP server for AICompared — something to actually run on a VM.
  * Dependency-free (Node's built-in http). Endpoints:
  *
+ *   GET  /           -> HTML home page (matt-jones.org house style)
  *   GET  /health     -> { status: "ok" }
  *   GET  /providers  -> { configured: [...] }
  *   POST /ask        -> body { prompt, model? } -> Gemini result
@@ -10,6 +11,7 @@
  */
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { configuredProviders } from "./config.js";
+import { HOME_PAGE_HTML } from "./homePage.js";
 import { GeminiClient } from "./providers/gemini.js";
 
 const PORT = Number(process.env.PORT ?? 8080);
@@ -28,6 +30,11 @@ async function readBody(req: IncomingMessage): Promise<string> {
 const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
   try {
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+
+    if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+      return res.end(HOME_PAGE_HTML);
+    }
 
     if (req.method === "GET" && url.pathname === "/health") {
       return json(res, 200, { status: "ok" });
