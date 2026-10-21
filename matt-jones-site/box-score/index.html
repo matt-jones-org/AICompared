@@ -1,0 +1,550 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style><title>Box Score | Matt Jones</title>
+<link rel="icon" href="/favicon.svg"></head><body>
+
+<style>
+  :root{
+    --paper:#0D1310; --ink:#EDEFE6; --ink-soft:#9AA394; --edge:#2A3326; --card:#141B14;
+    --board:#0D1310; --board2:#141B14; --board3:#1F2B20; --line:#2A3326;
+    --chalk:#EDEFE6; --dim:#9AA394;
+    --amber:#E8A93C; --amber-ink:#E8A93C; --red-ink:#E0705F; --green-ok:#4E9E6A; --accent:#E4573F; --pop:#1B241C; --pop2:#202B21; --pop3:#182619;
+    --disp:"Helvetica Neue","Arial Narrow",Arial,sans-serif; --ui:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  @media (prefers-reduced-motion: reduce){ *, *::before, *::after{animation:none !important; transition:none !important} }
+  body{background:var(--paper); color:var(--ink); font-family:var(--ui); font-size:16px; line-height:1.5}
+  a{color:var(--amber-ink); text-decoration-color:rgba(143,93,12,.4)}
+  button{font-family:inherit; cursor:pointer}
+  :focus-visible{outline:2px solid var(--amber-ink); outline-offset:2px}
+  .wrap{max-width:980px; margin:0 auto; padding:0 20px}
+
+  /* ---------- header ---------- */
+  header{padding:32px 0 6px}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.28em; color:var(--ink-soft); text-transform:uppercase}
+  .wordmark{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-top:8px}
+  h1{font-family:var(--disp); font-weight:800; font-size:clamp(30px,5.4vw,54px); letter-spacing:.04em; line-height:1; color:var(--ink)}
+  .inning-tile{display:inline-flex; flex-direction:column; align-items:center; transform:translateY(4px)}
+  .inning-tile .num{font-family:var(--mono); font-weight:700; font-size:clamp(20px,3.4vw,30px); line-height:1; color:var(--amber);
+    background:var(--board2); border:1px solid var(--board); border-radius:6px; padding:9px 13px 8px; box-shadow:inset 0 -3px 0 rgba(0,0,0,.35); min-width:2.4ch; text-align:center}
+  .inning-tile .lbl{font-family:var(--mono); font-size:9.5px; letter-spacing:.14em; color:var(--ink-soft); margin-top:5px; text-transform:uppercase}
+  .dek{color:var(--ink-soft); font-size:17px; max-width:66ch; margin-top:10px}
+  .dek b{color:var(--ink)}
+
+  /* ---------- scoreboard strip ---------- */
+  .strip{position:sticky; top:60px; z-index:20; background:var(--board2); color:var(--chalk); border-top:2px solid var(--amber);
+    border-bottom:1px solid var(--board); margin-top:18px}
+  .strip .in{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:10px 0}
+  .strip .stat{font-family:var(--mono); font-size:12px; letter-spacing:.08em}
+  .strip .stat b{color:var(--amber); font-size:15px}
+  .innings{display:flex; gap:4px}
+  .innings i{width:16px; height:16px; border:1px solid var(--line); border-radius:3px; font-style:normal; display:grid; place-items:center;
+    font-family:var(--mono); font-size:8.5px; color:var(--dim)}
+  .innings i.agree{background:var(--green-ok); border-color:var(--green-ok); color:#fff}
+  .innings i.close{background:var(--amber); border-color:#B07818; color:var(--board)}
+  .innings i.blown{background:var(--red-ink); border-color:var(--red-ink); color:#fff}
+  .innings i.now{outline:2px solid var(--amber); outline-offset:1px}
+  .streak{font-family:var(--mono); font-size:12px; color:var(--dim)}
+  .streak b{color:var(--amber)}
+
+  /* ---------- play area ---------- */
+  .field{margin-top:22px}
+  .playcard{background:var(--card); border:1px solid var(--edge); border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(27,51,37,.10)}
+  .play-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    background:var(--board2); color:var(--chalk); padding:11px 18px}
+  .play-head .pt{font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--amber)}
+  .play-head .pc{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--dim)}
+  .msgs{padding:18px}
+  .msg{display:flex; gap:12px; margin-bottom:14px}
+  .msg:last-child{margin-bottom:0}
+  .msg .who{flex:none; font-family:var(--mono); font-size:9.5px; font-weight:700; letter-spacing:.1em; padding:4px 8px; border-radius:5px; height:fit-content; margin-top:2px}
+  .msg.cust .who{background:var(--pop2); color:var(--ink-soft); border:1px solid var(--edge)}
+  .msg.agent .who{background:var(--board2); color:var(--amber)}
+  .msg .bubble{font-size:15.5px; line-height:1.55; background:var(--pop); border:1px solid var(--edge); border-radius:10px; padding:11px 14px; white-space:pre-line}
+  .msg.agent .bubble{background:var(--pop3); border-color:var(--edge)}
+
+  /* ---------- calls ---------- */
+  .callbar{padding:16px 18px 18px; border-top:1px dashed var(--edge)}
+  .callbar .cue{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--ink-soft); text-transform:uppercase; margin-bottom:10px}
+  .calls{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+  .callbtn{border-radius:10px; padding:12px 8px 10px; text-align:center; border:2px solid var(--edge); background:var(--pop); transition:transform .1s}
+  .callbtn:hover{transform:translateY(-2px); border-color:var(--amber-ink)}
+  .callbtn .ic{font-size:20px; line-height:1}
+  .callbtn .cn{font-family:var(--disp); font-size:12.5px; letter-spacing:.06em; margin-top:6px; color:var(--ink)}
+  .callbtn .cd{font-family:var(--mono); font-size:9.5px; color:var(--ink-soft); margin-top:4px; letter-spacing:.04em}
+  .callbtn .key{display:inline-block; font-family:var(--mono); font-size:9px; color:var(--ink-soft); border:1px solid var(--edge); border-radius:4px; padding:0 5px; margin-top:6px}
+  .callbtn.picked{border-color:var(--board); background:var(--pop2)}
+  .callbtn:disabled{cursor:default; opacity:.55}
+  .callbtn.picked:disabled{opacity:1}
+  @media (max-width:640px){ .calls{grid-template-columns:repeat(2,1fr)} }
+
+  /* ---------- booth ruling ---------- */
+  .booth{display:none; margin-top:14px; border-radius:12px; overflow:hidden; border:1px solid var(--board)}
+  .booth.show{display:block; animation:pop .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pop{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  .booth .b-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; padding:11px 18px;
+    background:var(--board); color:var(--chalk); font-family:var(--mono); font-size:11px; letter-spacing:.14em}
+  .booth .b-verdict{font-weight:700}
+  .booth .b-verdict.agree{color:#7FDCA0}
+  .booth .b-verdict.close{color:var(--amber)}
+  .booth .b-verdict.blown{color:#F0A49D}
+  .booth .b-body{background:var(--board2); color:var(--chalk); padding:14px 18px}
+  .booth .b-call{font-family:var(--mono); font-size:13px; margin-bottom:8px}
+  .booth .b-call b{color:var(--amber)}
+  .booth .b-why{font-size:15px; line-height:1.55; color:var(--chalk)}
+  .booth .b-flag{margin-top:10px; font-family:var(--mono); font-size:12px; color:#F0A49D; border-left:3px solid var(--red-ink); padding:4px 0 4px 12px}
+  .booth .b-next{margin-top:14px}
+  .nextbtn{font-family:var(--mono); font-weight:700; font-size:13px; letter-spacing:.06em; background:var(--accent); color:#fff;
+    border:1px solid #A32E23; border-radius:7px; padding:10px 18px; box-shadow:0 2px 0 #A32E23}
+  .nextbtn:hover{background:#EA6B55}
+
+  /* ---------- final box score ---------- */
+  .final{display:none; margin-top:22px}
+  .final.show{display:block; animation:pop .3s ease}
+  .final .f-board{background:var(--board); color:var(--chalk); border-radius:12px; border:1px solid var(--board3); padding:24px 22px}
+  .final h2{font-family:var(--disp); font-weight:800; font-size:clamp(20px,3.6vw,28px); letter-spacing:.05em; color:var(--chalk)}
+  .final .rating{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--amber); margin-top:6px}
+  .bs-scroll{overflow-x:auto; margin-top:16px}
+  table.bs{border-collapse:collapse; width:100%; min-width:520px; font-family:var(--mono)}
+  table.bs th, table.bs td{border:1px solid var(--line); padding:7px 9px; text-align:center; font-size:12px}
+  table.bs th{background:var(--board3); color:var(--dim); font-size:9.5px; letter-spacing:.12em}
+  table.bs td:first-child, table.bs th:first-child{text-align:left; color:var(--dim); font-size:10px; letter-spacing:.1em}
+  table.bs td.agree{background:rgba(46,125,79,.4); color:#B9EECB}
+  table.bs td.close{background:rgba(242,178,62,.28); color:var(--amber)}
+  table.bs td.blown{background:rgba(176,58,44,.38); color:#F0A49D}
+  table.bs td.tot{color:var(--amber); font-weight:700}
+  .final .thesis{font-family:var(--mono); font-size:12px; color:var(--dim); line-height:1.8; margin-top:16px; border-top:1px solid var(--line); padding-top:12px}
+  .review{margin-top:16px}
+  .review .r-h{font-family:var(--mono); font-size:11px; letter-spacing:.18em; color:var(--amber); margin-bottom:8px}
+  .review .r-item{background:var(--board2); border:1px solid var(--line); border-radius:9px; padding:12px 14px; margin-bottom:8px; font-size:14.5px}
+  .review .r-item .r-meta{font-family:var(--mono); font-size:11px; color:var(--dim); margin-bottom:5px}
+  .review .r-item .r-meta b{color:var(--amber)}
+  .again{margin-top:18px}
+
+  /* ---------- methods & footer ---------- */
+  .methods{margin-top:38px}
+  .methods h2{font-family:var(--disp); font-weight:800; font-size:20px; letter-spacing:.06em; margin-bottom:14px; color:var(--ink)}
+  .mcards{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px}
+  .mcard{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:18px}
+  .mcard h3{font-size:16.5px; font-weight:700; margin-bottom:8px; color:var(--ink)}
+  .mcard p{color:var(--ink-soft); font-size:14.5px; line-height:1.6}
+  .mcard b{color:var(--ink)}
+  .fineprint{font-family:var(--mono); font-size:11px; color:var(--ink-soft); line-height:1.8; margin:26px 0 0; border-top:1px solid var(--edge); padding-top:14px}
+  footer{border-top:1px solid var(--edge); margin-top:22px; padding:18px 0 42px; font-family:var(--mono); font-size:12px; color:var(--ink-soft)}
+  footer b{color:var(--ink)}
+
+  /* ---- stitch scorecard conversion (dark, single-theme) ---- */
+  :root{color-scheme:dark}
+  header{padding:clamp(44px,7vw,84px) 0 10px}
+  h1{font-weight:800;font-size:clamp(2.6rem,9vw,5.6rem);letter-spacing:-.01em;line-height:.95}
+  .eyebrow{display:flex;align-items:center;gap:12px;color:var(--green-ok)}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--edge)}
+  .dek{font-size:1.075rem;color:var(--ink-soft)}
+  a{color:var(--accent);text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+  :focus-visible{outline-color:var(--accent)}
+  .mcard,.mapcard,.panel,.playcard,.booth,.final .f-board{border-radius:6px;box-shadow:0 1px 0 rgba(23,26,18,.04),0 12px 30px -18px rgba(0,0,0,.35)}
+
+  .strip{background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:saturate(1.1) blur(8px);
+    color:var(--ink);border-top:2px dashed var(--accent);border-bottom:1px solid var(--edge)}
+  .strip .stat{color:var(--ink-soft)} .strip .stat b{color:var(--accent)}
+  .streak{color:var(--ink-soft)} .streak b{color:var(--accent)}
+  .innings i{border-color:var(--edge);color:var(--ink-soft)}
+  .innings i.agree{color:#fff} .innings i.blown{color:#fff} .innings i.close{color:#171A12}
+  .innings i.now{outline-color:var(--accent)}
+  .play-head{background:var(--card);border-bottom:2px dashed var(--accent)}
+  .play-head .pt{color:var(--ink)} .play-head .pc{color:var(--ink-soft)}
+  .inning-tile .num{background:var(--card);border:1px solid var(--edge);color:var(--accent);box-shadow:none}
+  .msg.agent .who{background:var(--green-ok);color:#fff}
+  .callbtn:hover{border-color:var(--accent)}
+  .booth{border-color:var(--edge)}
+  .booth .b-head{background:var(--card);color:var(--ink);border-bottom:2px dashed var(--accent)}
+  .booth .b-verdict.agree{color:var(--green-ok)} .booth .b-verdict.close{color:var(--amber-ink)}
+  .booth .b-verdict.blown{color:var(--red-ink)}
+  .booth .b-body{background:var(--card);color:var(--ink)}
+  .booth .b-call{color:var(--ink-soft)} .booth .b-call b{color:var(--accent)}
+  .booth .b-why{color:var(--ink)} .booth .b-flag{color:var(--red-ink)}
+  .final .f-board{background:var(--card);color:var(--ink);border:1px solid var(--edge)}
+  .final h2{color:var(--ink)} .final .rating{color:var(--accent)}
+  table.bs th{background:transparent;color:var(--ink-soft)}
+  table.bs th,table.bs td{border-color:var(--edge)}
+  table.bs td:first-child,table.bs th:first-child{color:var(--ink-soft)}
+  table.bs td.agree{background:rgba(47,107,69,.18);color:var(--green-ok)}
+  table.bs td.close{background:rgba(217,147,13,.16);color:var(--amber-ink)}
+  table.bs td.blown{background:rgba(176,58,44,.16);color:var(--red-ink)}
+  table.bs td.tot{color:var(--accent)}
+  .final .thesis{color:var(--ink-soft);border-top-color:var(--edge)}
+  .review .r-h{color:var(--accent)}
+  .review .r-item{background:var(--pop);border-color:var(--edge);color:var(--ink)}
+  .review .r-item .r-meta{color:var(--ink-soft)} .review .r-item .r-meta b{color:var(--accent)}
+
+</style>
+<!-- MJ uniform chrome: sticky header + footer styles, driven by the page tokens so both themes work -->
+<style>
+  header.bar{padding:0;position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--edge)}
+  .bar .bar-wrap{display:flex;align-items:center;justify-content:space-between;height:60px;
+    max-width:1080px;margin:0 auto;padding:0 24px}
+  .bar .wordmark{font-family:var(--disp);font-weight:800;
+    letter-spacing:.14em;text-transform:uppercase;font-size:.95rem;text-decoration:none;color:var(--ink);
+    display:inline-flex;align-items:center;gap:.5em}
+  .bar .wordmark .ball{width:15px;height:15px;border-radius:50%;background:var(--card);
+    border:1.5px solid var(--accent);position:relative;display:inline-block}
+  .bar .wordmark .ball::before,.bar .wordmark .ball::after{content:"";position:absolute;inset:2px 4px;
+    border:1px solid var(--accent);border-top:0;border-bottom:0;border-radius:50%}
+  nav.top{display:flex;gap:22px}
+  nav.top a{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink-soft);padding:6px 0;border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s}
+  nav.top a:hover{color:var(--ink);border-color:var(--accent)}
+  @media (max-width:620px){nav.top{display:none}}
+  nav.top .menu{position:relative;display:flex;align-items:center}
+  nav.top .menu > a .caret{font-size:.85em;color:var(--accent)}
+  nav.top .menu-list{position:absolute;top:100%;left:50%;transform:translateX(-50%);min-width:200px;
+    padding:6px 0;background:var(--card);border:1px solid var(--edge);border-top:2px dashed var(--accent);
+    border-radius:0 0 6px 6px;box-shadow:0 1px 0 rgba(23,26,18,.04),0 12px 30px -18px rgba(0,0,0,.45);
+    display:none;flex-direction:column}
+  nav.top .menu:hover .menu-list,nav.top .menu:focus-within .menu-list{display:flex}
+  nav.top .menu-list a{display:block;padding:10px 16px;border-bottom:0;white-space:nowrap}
+  nav.top .menu-list a:hover{color:var(--ink);background:color-mix(in srgb,var(--green-ok) 12%,transparent)}
+  footer.site-foot{border-top:2px dashed var(--accent);margin-top:22px;padding:38px 0 48px;background:transparent}
+  footer.site-foot .foot-grid{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;
+    flex-wrap:wrap;max-width:1080px;margin:0 auto;padding:0 24px}
+  footer.site-foot .foot-name{font-family:var(--disp);font-weight:800;
+    text-transform:uppercase;font-size:clamp(1.6rem,5vw,2.4rem);letter-spacing:-.01em;line-height:1;color:var(--ink)}
+  footer.site-foot .foot-sub{color:var(--ink-soft);margin-top:12px;max-width:54ch;font-size:16px;line-height:1.6}
+  footer.site-foot .foot-links{display:flex;flex-direction:column;gap:8px}
+  footer.site-foot .foot-links a{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;
+    color:var(--ink-soft);text-decoration:none}
+  footer.site-foot .foot-links a:hover{color:var(--accent)}
+  footer.site-foot .credit{max-width:1080px;margin:26px auto 0;padding:0 24px;font-family:var(--mono);
+    font-size:12px;color:var(--ink-soft);line-height:1.8}
+  footer.site-foot .credit b{color:var(--ink)}
+  footer.site-foot .copyright{max-width:1080px;margin:14px auto 0;padding:0 24px;font-family:var(--mono);
+    font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+</style>
+<header class="bar">
+  <div class="bar-wrap">
+    <a class="wordmark" href="/"><span class="ball" aria-hidden="true"></span> Matt Jones</a>
+    <nav class="top" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+      <a href="/portfolio/">Portfolio</a>
+      <div class="menu">
+        <a href="/portfolio/#software" aria-haspopup="true">Software <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/llmadness/">LLMAdness</a>
+          <a href="/cry-wolf/">Cry Wolf</a>
+          <a href="/the-bullzen/">The Bullzen</a>
+          <a href="/windhover/">Windhover</a>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="/portfolio/#baseball" aria-haspopup="true">Baseball <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/magic-number/">Magic Number</a>
+          <a href="/black-ink/">Black Ink</a>
+          <a href="/scouting-report/">Scouting Report</a>
+        </div>
+      </div>
+      <a href="/box-score/">Box Score</a>
+      <a href="/calendar/">Book a time</a>
+    </nav>
+  </div>
+</header>
+<!-- end MJ uniform chrome header -->
+
+<header class="wrap">
+  <div class="eyebrow">The support QA calibration game · one call per play · the booth checks your work</div>
+  <div class="wordmark">
+    <h1>BOX SCORE</h1>
+    <span class="inning-tile"><span class="num" id="tileInning">1</span><span class="lbl">inning</span></span>
+  </div>
+  <p class="dek">You're the <b>official scorer</b>. Nine support plays, nine innings — read the exchange, make <b>one call</b>. Then the <b>AI replay booth</b> flips its card and explains its reasoning. Agree and your streak grows; disagree and the play goes to review. That's the whole point: <b>the booth never overrules you</b> — it makes the human reviewer sharper. Nine calls, one box score.</p>
+</header>
+
+<div class="strip">
+  <div class="wrap in">
+    <span class="stat">INNING <b id="sInning">1</b>/9</span>
+    <span class="innings" id="inningBoxes" aria-hidden="true"></span>
+    <span class="stat">AGREED <b id="sAgree">0</b></span>
+    <span class="streak" id="sStreak">STREAK <b>0</b></span>
+  </div>
+</div>
+
+<main class="wrap field">
+  <section class="playcard" id="playcard">
+    <div class="play-head">
+      <span class="pt" id="playTitle">—</span>
+      <span class="pc" id="playCat">—</span>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="callbar">
+      <div class="cue" id="cue">MAKE THE CALL — HOW DID THE AGENT DO? (KEYS 1–4)</div>
+      <div class="calls" id="calls"></div>
+    </div>
+  </section>
+
+  <section class="booth" id="booth" aria-live="polite">
+    <div class="b-head">
+      <span>⏸ REPLAY BOOTH</span>
+      <span class="b-verdict" id="bVerdict"></span>
+    </div>
+    <div class="b-body">
+      <div class="b-call" id="bCall"></div>
+      <div class="b-why" id="bWhy"></div>
+      <div class="b-flag" id="bFlag" style="display:none"></div>
+      <div class="b-next"><button class="nextbtn" id="nextBtn">NEXT PLAY →</button></div>
+    </div>
+  </section>
+
+  <section class="final" id="final">
+    <div class="f-board">
+      <h2 id="fTitle">FINAL — YOUR BOX SCORE</h2>
+      <div class="rating" id="fRating"></div>
+      <div class="bs-scroll">
+        <table class="bs" id="bsTable"></table>
+      </div>
+      <div class="review" id="review"></div>
+      <p class="thesis">HOW TO READ THIS: green = you and the booth agreed · amber = one grade apart, a judgment call · red = a blown call worth a second look. In a real support org, the red and amber plays are exactly what a human QA lead reviews next — the booth surfaces them, a person decides. AI as the replay official, never the umpire.</p>
+      <div class="again"><button class="nextbtn" id="againBtn">↺ PLAY ANOTHER GAME (NEW PLAYS)</button></div>
+    </div>
+  </section>
+
+  <section class="methods">
+    <h2>HOW THE CALLS WORK</h2>
+    <div class="mcards">
+      <div class="mcard">
+        <h3>Four calls, no sliders</h3>
+        <p>The old version of this page asked you to grade five rubric categories on every transcript. Nobody QAs like that for fun. Now it's one call per play — <b>Web Gem</b> (flawless), <b>Base Hit</b> (does the job), <b>Error</b> (fixable miss), <b>Ejection</b> (policy breach) — the same four-point scale a real rubric collapses to, wearing a much better uniform.</p>
+      </div>
+      <div class="mcard">
+        <h3>The replay booth</h3>
+        <p>Every play carries the booth's own call and its reasoning, written in advance the way an AI QA model annotates real tickets. The reveal-after-you-commit order matters: <b>you're never anchored by the machine</b>. That's how AI-assisted QA should work in production too.</p>
+      </div>
+      <div class="mcard">
+        <h3>Watch for landmines</h3>
+        <p>A few plays hide an automatic error — leaked data, a promise the company can't keep, a policy breach dressed up in a friendly tone. A response can read warm and still be an <b>Ejection</b>. The booth will let you hear about it.</p>
+      </div>
+    </div>
+    <p class="fineprint">All transcripts are fictional and were written with Claude for this game — no real customers, companies, or tickets. Unofficial fan project of good support everywhere. Calibration is a skill; nine innings is a workout.</p>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-name">Let's talk ball.</div>
+      <p class="foot-sub">Interested in what I'm building here? Drop a line — I answer.</p>
+    </div>
+    <div class="foot-links">
+      <a href="mailto:mscottjones24@gmail.com">mscottjones24@gmail.com</a>
+      <a href="https://linkedin.com/in/mattjoneshtx">linkedin.com/in/mattjoneshtx</a>
+      <a href="/calendar/">Book a time →</a>
+    </div>
+  </div>
+  <div class="credit">A weekend build by <b>Matt Jones</b> · moving to Austin, TX in October 2026 — sibling of <b>Windhover</b>, the geofence QA sim.</div>
+  <div class="copyright">© Matt Jones, 2026 — A website about nothing.</div>
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   BOX SCORE v2 — one-tap calls, replay booth, real box score.
+   Verdict scale: 4 WEB GEM · 3 BASE HIT · 2 ERROR · 1 EJECTION
+   ============================================================ */
+const CALLS = [
+  { v:4, ic:"🧤", name:"WEB GEM",  desc:"flawless play" },
+  { v:3, ic:"🥎", name:"BASE HIT", desc:"solid, ships as-is" },
+  { v:2, ic:"❕", name:"ERROR",    desc:"fixable miss" },
+  { v:1, ic:"🚫", name:"EJECTION", desc:"policy breach" }
+];
+
+const PLAYS = [
+  { t:"THE DOUBLE CHARGE", cat:"BILLING",
+    c:"Hi — I just got charged twice for my subscription this month. $29.99 on the 1st AND the 3rd. Can someone fix this?",
+    a:"Hi Jordan! You're right, I can see both charges on my end — that second one on the 3rd shouldn't be there. I've refunded it just now; you'll see it back on your card in 3–5 business days, and I've added a note so it can't recur next cycle. I'm sorry we made you do the math on this one. Anything else I can check while I'm in your account?",
+    booth:4, why:"Verified before promising, fixed the root cause, gave a concrete timeline, owned the mistake without groveling. Frame it and hang it in the clubhouse." },
+  { t:"THE VANISHING EXPORT", cat:"BUG REPORT",
+    c:"The CSV export button does nothing. I click it, the page blinks, no file. I'm on Chrome. This worked last week.",
+    a:"Thanks for reporting! Have you tried clearing your cache and cookies? That usually fixes it. Let us know!",
+    booth:2, why:"Cache-clearing as a reflex, no reproduction attempt, no browser/version details collected, no ticket reference. It's not rude — it's just a shrug in sentence form. Fixable miss." },
+  { t:"THE REFUND THAT ISN'T", cat:"REFUND POLICY",
+    c:"I bought the annual plan 4 months ago and I want a full refund. Your product didn't work out for us.",
+    a:"Totally understand! I've gone ahead and processed a full refund of $588 for you. Sorry it didn't work out — hope to see you back someday!",
+    booth:1, why:"Friendliest ejection you'll ever see. Policy caps refunds at 30 days; the agent invented $588 the company doesn't owe. Warm tone doesn't launder a commitment the business can't keep.", flag:"AUTOMATIC ERROR — made a financial commitment outside policy." },
+  { t:"THE LOCKED-OUT ADMIN", cat:"ACCOUNT ACCESS",
+    c:"Our admin left the company and nobody else can access the workspace. We need control transferred TODAY, we have payroll running through this.",
+    a:"I hear the urgency — payroll is not something to gamble with. For security I can't just hand over the workspace, but here's the fast lane: reply from your company domain with a signed ownership-transfer form (attached) and a copy of your business registration, and I'll walk it straight to our verification team with an urgent flag. That's typically same-day. I'll stay on this thread until you're in.",
+    booth:4, why:"Held the security line under pressure AND built the customer a fast path through it. 'I'll stay on this thread' is the sentence every locked-out admin needs to read." },
+  { t:"THE PASTED PASSWORD", cat:"SECURITY",
+    c:"I can't log in!! Here's my password so you can try it: Tr0ub4dor&3. Just tell me if it works??",
+    a:"It works on my end! I logged in fine with it just now, so it must be something on your side — maybe try a different browser?",
+    booth:1, why:"The agent USED the customer's password. Correct play: never touch it, tell them not to share credentials, trigger a reset, and have the exposed password rotated. This is the play they show in training videos, as a warning.", flag:"AUTOMATIC ERROR — mishandled customer credentials." },
+  { t:"THE ANGRY ALL-CAPS", cat:"ESCALATION",
+    c:"THIS IS THE THIRD TIME I'M WRITING IN. YOUR APP DELETED MY PROJECT. THREE WEEKS OF WORK. I WANT ANSWERS NOT A TEMPLATE.",
+    a:"You're right to be angry, and you shouldn't have had to write in three times — that's on us. I've pulled your two earlier tickets so you don't repeat anything. First, recovery: deleted projects are soft-deleted for 30 days, and I can see 'Q3 Campaign' in your archive right now — I've restored it, please confirm you see it. Second, I've escalated why you got template replies twice; you'll hear from my lead by tomorrow. What else did you lose besides that project?",
+    booth:4, why:"Validated without groveling, killed the repeat-yourself problem, led with recovery instead of apology theater, and named the systemic failure. Textbook." },
+  { t:"THE FEATURE THAT ISN'T", cat:"HOW-TO",
+    c:"How do I set up automatic weekly PDF reports to email to my team? I can't find it anywhere.",
+    a:"Great question! That's not something we support right now — reports have to be exported manually from the dashboard. I know that's not the answer you were hoping for, so two things: here's a 3-step way to make the manual export take under a minute (link), and I've logged your request with our product team — weekly scheduled reports is one of our most-requested features and your +1 genuinely moves it up the list.",
+    booth:3, why:"Honest no, useful workaround, real product-feedback loop. A Web Gem would have offered to notify them when it ships — small miss, solid hit." },
+  { t:"THE COPY-PASTE SPECIAL", cat:"HOW-TO",
+    c:"Quick one — does the mobile app work offline? I'm about to get on a 14-hour flight.",
+    a:"Thank you for contacting support! We appreciate your patience. Our team is committed to providing you with the best possible experience. Please consult our comprehensive documentation portal for information regarding application functionality. Is there anything else I can help you with today?",
+    booth:2, why:"Twenty-nine words of corporate lorem ipsum and zero answer to a yes/no question from someone boarding a plane. Not a policy breach — just a whiff. Error, charged to the agent." },
+  { t:"THE WRONG CUSTOMER", cat:"SECURITY",
+    c:"Can you confirm what card we have on file? I need the last 4 digits for our expense report.",
+    a:"Sure! You have a Visa ending 4482, expiring 09/27, under the name Daniela M. Reyes, billing address 1140 Crestview Dr. Anything else?",
+    booth:1, why:"The last 4 was a legitimate ask. The expiration, full cardholder name, and home address were not — and there's no sign the agent verified who they were talking to first. One question, three unnecessary disclosures.", flag:"AUTOMATIC ERROR — over-disclosed payment and personal data." },
+  { t:"THE POLITE GHOST", cat:"BUG REPORT",
+    c:"Following up on ticket #8841 from 12 days ago about the sync failures — any update? This is blocking our whole team.",
+    a:"Hi! Yes, ticket #8841 is still open with our engineering team. I don't have an update yet, but I've bumped the ticket and flagged that it's team-blocking. I'm also setting a reminder to update you by Thursday even if the news is 'still working on it' — no more silence. In the meantime, some teams unblock with a manual sync (Settings → Sync → Force): not a fix, but it may get you moving today.",
+    booth:3, why:"Can't fake a fix that doesn't exist, but killed the silence, set a proactive update cadence, and offered a bridge. The missing piece for a Gem: an honest ETA or escalation path after 12 days." },
+  { t:"THE ACCIDENTAL UPSELL", cat:"BILLING",
+    c:"Why did my bill jump from $29 to $79 this month?? I didn't change anything.",
+    a:"Looks like you were moved to the Pro plan — honestly it's a way better deal for a team your size! You get advanced analytics, priority support, and 5x the storage. Most customers who try Pro never go back. Want me to send over what's included?",
+    booth:2, why:"The customer asked WHY they were charged without consent; the agent answered with a brochure. No investigation of how the plan changed, no offer to revert or refund. Reads like sales wearing a support badge — but it didn't cross a policy line. Error.", },
+  { t:"THE 2 A.M. OUTAGE", cat:"ESCALATION",
+    c:"Your whole platform is down and we have a product launch in 6 hours. Status page says 'all systems operational.' It is not.",
+    a:"Confirmed — you're right and the status page is wrong. We have a partial outage affecting logins in your region; status page update is publishing now. What I can tell you straight: engineering was paged 22 minutes ago, mitigation is in progress, and current internal ETA is under 2 hours — well before your launch. I've subscribed you to the incident so every update hits your inbox, and I'm flagging your launch timing to the incident commander. I'll personally confirm here the moment you're back up.",
+    booth:4, why:"Told the truth against the company's own status page, gave real numbers instead of vibes, connected the customer's stakes to the incident team. This is what trust looks like at 2 a.m." },
+  { t:"THE OVERSHARER", cat:"ACCOUNT ACCESS",
+    c:"My teammate is on vacation and I need into her account to grab one file. Can you just reset her password and send it to me? She won't mind, we're on the same team.",
+    a:"I get it — vacation lockouts are the worst timing. I can't reset her password for you though, even same-team: her account is hers alone, that one's carved in stone. What I CAN do: if the file lives in a shared workspace, your admin can grant you access in about two minutes — here's how. If it's in her private space, the play is a quick message to her; a one-tap approval from her phone and you're in. Want me to loop in your workspace admin?",
+    booth:4, why:"Refused the exact request, solved the actual problem, kept it human. 'That one's carved in stone' does more policy work than a paragraph of legalese." },
+  { t:"THE MYSTERY DISCOUNT", cat:"REFUND POLICY",
+    c:"My friend said he got 40% off for complaining on Twitter. I want the same discount or I'm cancelling.",
+    a:"I'll be straight with you: I can't match a discount I can't verify, and 'complain publicly, get 40%' isn't a program we run — if someone got that, it was a one-off I can't see. What I can actually do: you're eligible for our annual-plan rate, which works out to 25% less than what you're paying monthly, no Twitter required. If that doesn't move you, I'd rather help you cancel cleanly than have you feel strong-armed. Which way do you want to go?",
+    booth:3, why:"Didn't cave to discount blackmail, offered a real alternative, respected the customer's leverage without rewarding it. A Gem would have checked the friend's claim before dismissing it — 'I can't see it' came a beat too fast." }
+];
+
+/* ---------------- state ---------------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let deck = [], inning = 0, results = [], streak = 0, best = 0, locked = false;
+
+function shuffle(a){ const x = a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+
+function newGame(){
+  deck = shuffle(PLAYS).slice(0,9);
+  inning = 0; results = []; streak = 0; best = 0;
+  $("final").classList.remove("show");
+  $("playcard").style.display = "";
+  buildInningBoxes();
+  renderPlay();
+}
+
+function buildInningBoxes(){
+  const box = $("inningBoxes"); box.innerHTML = "";
+  for(let i=0;i<9;i++){ const s=document.createElement("i"); s.textContent=i+1; box.appendChild(s); }
+  paintStrip();
+}
+function paintStrip(){
+  $("sInning").textContent = Math.min(inning+1,9);
+  $("tileInning").textContent = Math.min(inning+1,9);
+  $("sAgree").textContent = results.filter(r=>r.grade==="agree").length;
+  $("sStreak").innerHTML = "STREAK <b>"+streak+"</b>" + (streak>=3?" 🔥":"");
+  const boxes = $("inningBoxes").children;
+  for(let i=0;i<9;i++){
+    boxes[i].className = results[i] ? results[i].grade : "";
+    if(i===inning && !results[i]) boxes[i].classList.add("now");
+  }
+}
+
+function renderPlay(){
+  locked = false;
+  const p = deck[inning];
+  $("playTitle").textContent = "PLAY "+(inning+1)+" — "+p.t;
+  $("playCat").textContent = p.cat;
+  $("msgs").innerHTML =
+    '<div class="msg cust"><span class="who">CUSTOMER</span><div class="bubble">'+esc(p.c)+'</div></div>'+
+    '<div class="msg agent"><span class="who">AGENT</span><div class="bubble">'+esc(p.a)+'</div></div>';
+  const calls = $("calls"); calls.innerHTML = "";
+  CALLS.forEach((c,idx)=>{
+    const b = document.createElement("button");
+    b.className = "callbtn";
+    b.innerHTML = '<span class="ic">'+c.ic+'</span><span class="cn">'+c.name+'</span><span class="cd">'+c.desc+'</span><span class="key">'+(idx+1)+'</span>';
+    b.addEventListener("click", ()=>makeCall(c.v, b));
+    calls.appendChild(b);
+  });
+  $("booth").classList.remove("show");
+  $("playcard").scrollIntoView({behavior:"smooth", block:"start"});
+  paintStrip();
+}
+
+function callName(v){ return CALLS.find(c=>c.v===v).name; }
+
+function makeCall(v, btn){
+  if(locked) return; locked = true;
+  document.querySelectorAll(".callbtn").forEach(b=>{ b.disabled = true; if(b===btn) b.classList.add("picked"); });
+  const p = deck[inning];
+  const diff = Math.abs(v - p.booth);
+  const grade = diff===0 ? "agree" : diff===1 ? "close" : "blown";
+  if(grade==="agree"){ streak++; best=Math.max(best,streak); } else { streak=0; }
+  results[inning] = { play:p, you:v, grade };
+  const vEl = $("bVerdict");
+  vEl.className = "b-verdict "+grade;
+  vEl.textContent = grade==="agree" ? "✓ CALL CONFIRMED" : grade==="close" ? "◑ CLOSE CALL" : "✕ CALL OVERTURNED*";
+  $("bCall").innerHTML = "YOUR CALL: <b>"+callName(v)+"</b> &nbsp;·&nbsp; BOOTH'S CALL: <b>"+callName(p.booth)+"</b>";
+  $("bWhy").textContent = p.why;
+  const flag = $("bFlag");
+  if(p.flag){ flag.style.display="block"; flag.textContent = "⚠ "+p.flag; } else { flag.style.display="none"; }
+  $("nextBtn").textContent = inning===8 ? "SEE THE FINAL BOX SCORE →" : "NEXT PLAY →";
+  $("booth").classList.add("show");
+  $("booth").scrollIntoView({behavior:"smooth", block:"nearest"});
+  paintStrip();
+}
+
+function nextPlay(){
+  if(!results[inning]) return;
+  if(inning===8){ finish(); return; }
+  inning++;
+  renderPlay();
+}
+
+function finish(){
+  $("playcard").style.display = "none";
+  $("booth").classList.remove("show");
+  const agree = results.filter(r=>r.grade==="agree").length;
+  const close = results.filter(r=>r.grade==="close").length;
+  const pts = agree*2 + close;
+  const rating = pts>=16 ? "COOPERSTOWN CALIBRATED" : pts>=12 ? "GOLD-STANDARD SCORER" : pts>=8 ? "SOLID CLUB SCORER" : "ROOKIE BALL — RUN IT BACK";
+  $("fRating").textContent = "CALIBRATION "+Math.round(pts/18*100)+"% · BEST STREAK "+best+" · RATING: "+rating;
+  let t = "<thead><tr><th>INNING</th>";
+  for(let i=1;i<=9;i++) t += "<th>"+i+"</th>";
+  t += "<th>TOT</th></tr></thead><tbody>";
+  t += "<tr><td>YOUR CALL</td>";
+  results.forEach(r=>{ t += '<td class="'+r.grade+'">'+r.you+"</td>"; });
+  t += '<td class="tot">'+agree+"A</td></tr>";
+  t += "<tr><td>BOOTH</td>";
+  results.forEach(r=>{ t += "<td>"+r.play.booth+"</td>"; });
+  t += '<td class="tot">'+(close+ (9-agree-close))+"R</td></tr></tbody>";
+  $("bsTable").innerHTML = t;
+  const misses = results.filter(r=>r.grade!=="agree");
+  const rv = $("review");
+  if(misses.length){
+    rv.innerHTML = '<div class="r-h">SENT TO REVIEW — WHERE YOU AND THE BOOTH SPLIT</div>' + misses.map(r=>
+      '<div class="r-item"><div class="r-meta">'+esc(r.play.t)+' · YOU: <b>'+callName(r.you)+'</b> · BOOTH: <b>'+callName(r.play.booth)+'</b></div>'+esc(r.play.why)+'</div>'
+    ).join("");
+  } else {
+    rv.innerHTML = '<div class="r-h">NOTHING SENT TO REVIEW — A PERFECT GAME. THE BOOTH TIPS ITS CAP.</div>';
+  }
+  $("final").classList.add("show");
+  $("final").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+$("nextBtn").addEventListener("click", nextPlay);
+$("againBtn").addEventListener("click", newGame);
+document.addEventListener("keydown", e=>{
+  if(e.key>="1" && e.key<="4" && !locked && !$("final").classList.contains("show")){
+    const btns = document.querySelectorAll(".callbtn");
+    const idx = +e.key-1;
+    if(btns[idx]) makeCall(CALLS[idx].v, btns[idx]);
+  } else if(e.key==="Enter" && locked && $("booth").classList.contains("show")){
+    nextPlay();
+  }
+});
+
+newGame();
+</script>
+
+
+</body></html>

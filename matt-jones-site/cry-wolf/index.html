@@ -1,0 +1,780 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style><title>Cry Wolf | Matt Jones</title>
+<link rel="icon" href="/favicon.svg"></head><body>
+
+<style>
+  :root{
+    --paper:#0D1310; --ink:#EDEFE6; --ink-soft:#9AA394; --edge:#2A3326; --card:#141B14;
+    --board:#0D1310; --board2:#141B14; --board3:#1F2B20; --line:#2A3326;
+    --chalk:#EDEFE6; --dim:#9AA394;
+    --amber:#E8A93C; --amber-ink:#E8A93C; --red-ink:#E0705F; --green-ok:#4E9E6A; --accent:#E4573F; --pop:#1B241C; --pop2:#202B21; --pop3:#182619;
+    --disp:"Helvetica Neue","Arial Narrow",Arial,sans-serif; --ui:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  @media (prefers-reduced-motion: reduce){ *, *::before, *::after{animation:none !important; transition:none !important} }
+  body{background:var(--paper); color:var(--ink); font-family:var(--ui); font-size:16px; line-height:1.5}
+  a{color:var(--amber-ink); text-decoration-color:rgba(143,93,12,.4)}
+  button, select, input, label{font-family:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:2px solid var(--amber-ink); outline-offset:2px}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 20px}
+
+  /* ---------- header ---------- */
+  header{padding:32px 0 6px}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.28em; color:var(--ink-soft); text-transform:uppercase}
+  .wordmark{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-top:8px}
+  h1{font-family:var(--disp); font-weight:800; font-size:clamp(30px,5.4vw,54px); letter-spacing:.04em; line-height:1; color:var(--ink)}
+  .clock-tile{display:inline-flex; flex-direction:column; align-items:center; transform:translateY(4px)}
+  .clock-tile .num{font-family:var(--mono); font-weight:700; font-size:clamp(15px,2.6vw,22px); line-height:1; color:var(--amber);
+    background:var(--board2); border:1px solid var(--board); border-radius:6px; padding:10px 13px 9px; box-shadow:inset 0 -3px 0 rgba(0,0,0,.35); letter-spacing:.05em}
+  .clock-tile .lbl{font-family:var(--mono); font-size:9.5px; letter-spacing:.14em; color:var(--ink-soft); margin-top:5px; text-transform:uppercase}
+  .dek{color:var(--ink-soft); font-size:17px; max-width:68ch; margin-top:10px}
+  .dek b{color:var(--ink)}
+  .howto{font-family:var(--mono); font-size:12px; color:var(--ink-soft); letter-spacing:.04em; margin-top:12px}
+  .howto b{color:var(--amber-ink)}
+
+  /* ---------- map card ---------- */
+  .mapcard{margin-top:20px; background:var(--card); border:1px solid var(--edge); border-radius:12px; overflow:hidden;
+    box-shadow:0 2px 10px rgba(27,51,37,.10)}
+  .map-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+    background:var(--board2); color:var(--chalk); padding:10px 16px}
+  .map-head .mh-l{font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--amber)}
+  .map-head .mh-r{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--dim)}
+  svg#field{display:block; width:100%; height:auto; background:#E9EDDA; touch-action:none}
+  .statusrow{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--edge)}
+  .st{padding:10px 8px; text-align:center; border-right:1px solid var(--edge)}
+  .st:last-child{border-right:none}
+  .st .k{font-family:var(--mono); font-size:9.5px; letter-spacing:.18em; color:var(--ink-soft); text-transform:uppercase}
+  .st .v{font-family:var(--mono); font-size:14px; font-weight:700; margin-top:3px; color:var(--ink-soft)}
+  .st .v.in{color:var(--green-ok)}
+  .st .v.out{color:var(--ink-soft)}
+  .st .v.wolf{color:var(--red-ink)}
+
+  /* ---------- panels grid ---------- */
+  .panels{display:grid; grid-template-columns:1.05fr .95fr; gap:16px; margin-top:16px}
+  @media (max-width:860px){ .panels{grid-template-columns:1fr} }
+  .panel{background:var(--card); border:1px solid var(--edge); border-radius:12px; overflow:hidden}
+  .p-head{background:var(--board2); color:var(--amber); font-family:var(--mono); font-size:11px; letter-spacing:.16em; padding:9px 16px}
+  .p-body{padding:14px 16px}
+
+  /* controls */
+  .ctl-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+  .ctl-row:last-child{margin-bottom:0}
+  .ctl-lbl{font-family:var(--mono); font-size:10px; letter-spacing:.16em; color:var(--ink-soft); text-transform:uppercase; min-width:64px}
+  .seg{display:inline-flex; border:1px solid var(--edge); border-radius:9px; overflow:hidden; background:var(--pop)}
+  .seg button{font-family:var(--mono); font-size:12px; font-weight:600; padding:9px 12px; border:none; background:transparent; color:var(--ink-soft)}
+  .seg button + button{border-left:1px solid var(--edge)}
+  .seg button.sel{background:var(--board2); color:var(--amber)}
+  .runbtn{font-family:var(--mono); font-weight:700; font-size:13px; letter-spacing:.06em; background:var(--accent); color:#fff;
+    border:1px solid #A32E23; border-radius:7px; padding:10px 18px; box-shadow:0 2px 0 #A32E23}
+  .runbtn:hover{background:#EA6B55}
+  .runbtn:disabled{opacity:.55; cursor:default}
+  .ghostbtn{font-family:var(--mono); font-weight:600; font-size:12px; letter-spacing:.05em; background:var(--pop); color:var(--ink);
+    border:1px solid var(--edge); border-radius:7px; padding:9px 13px}
+  .ghostbtn:hover{border-color:var(--amber-ink); color:var(--amber-ink)}
+  .ck{display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:12px; color:var(--ink-soft); cursor:pointer; user-select:none}
+  .ck input{width:15px; height:15px; accent-color:var(--green-ok); cursor:pointer}
+  input[type=range]{accent-color:var(--amber-ink); width:150px}
+  .radlbl{font-family:var(--mono); font-size:12px; color:var(--ink); font-weight:600; min-width:56px}
+
+  /* legend */
+  .legend{display:flex; gap:14px; flex-wrap:wrap; padding:10px 16px; border-top:1px dashed var(--edge)}
+  .lg{display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--ink-soft); text-transform:uppercase}
+  .lg .sw{width:16px; height:0; border-top:3px solid}
+  .lg .dotsw{width:9px; height:9px; border-radius:50%}
+
+  /* event log */
+  .log{font-family:var(--mono); font-size:12px; line-height:1.9; max-height:250px; overflow-y:auto}
+  .log .le{display:flex; gap:10px}
+  .log .le .t{color:var(--ink-soft); flex:none}
+  .log .le.circ .m{color:var(--amber-ink)}
+  .log .le.poly .m{color:var(--green-ok)}
+  .log .le.act .m{color:var(--ink); font-weight:700}
+  .log .le.wolf .m{color:var(--red-ink); font-weight:700}
+  .log .empty{color:var(--ink-soft)}
+
+  /* scoreboard table */
+  table.sb{border-collapse:collapse; width:100%; font-family:var(--mono)}
+  table.sb th, table.sb td{border:1px solid var(--edge); padding:7px 9px; font-size:12px; text-align:center}
+  table.sb th{background:var(--board2); color:var(--dim); font-size:9.5px; letter-spacing:.14em}
+  table.sb th:first-child, table.sb td:first-child{text-align:left; font-size:10px; letter-spacing:.1em; color:var(--ink-soft)}
+  table.sb td.bad{color:var(--red-ink); font-weight:700}
+  table.sb td.good{color:var(--green-ok); font-weight:700}
+  .sb-note{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-top:10px; line-height:1.7}
+
+  /* ---------- methods & footer ---------- */
+  .methods{margin-top:36px}
+  .methods h2{font-family:var(--disp); font-weight:800; font-size:20px; letter-spacing:.06em; margin-bottom:14px; color:var(--ink)}
+  .mcards{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px}
+  .mcard{background:var(--card); border:1px solid var(--edge); border-radius:12px; padding:18px}
+  .mcard h3{font-size:16.5px; font-weight:700; margin-bottom:8px; color:var(--ink)}
+  .mcard p{color:var(--ink-soft); font-size:14.5px; line-height:1.6}
+  .mcard b{color:var(--ink)}
+  .mcard code{font-family:var(--mono); font-size:12px; color:var(--amber-ink); background:var(--pop2); border-radius:4px; padding:1px 5px}
+  .fineprint{font-family:var(--mono); font-size:11px; color:var(--ink-soft); line-height:1.8; margin:26px 0 0; border-top:1px solid var(--edge); padding-top:14px}
+  footer{border-top:1px solid var(--edge); margin-top:22px; padding:18px 0 42px; font-family:var(--mono); font-size:12px; color:var(--ink-soft)}
+  footer b{color:var(--ink)}
+
+  /* ---- stitch scorecard conversion (dark, single-theme) ---- */
+  :root{color-scheme:dark}
+  header{padding:clamp(44px,7vw,84px) 0 10px}
+  h1{font-weight:800;font-size:clamp(2.6rem,9vw,5.6rem);letter-spacing:-.01em;line-height:.95}
+  .eyebrow{display:flex;align-items:center;gap:12px;color:var(--green-ok)}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--edge)}
+  .dek{font-size:1.075rem;color:var(--ink-soft)}
+  a{color:var(--accent);text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent)}
+  :focus-visible{outline-color:var(--accent)}
+  .mcard,.mapcard,.panel,.playcard,.booth,.final .f-board{border-radius:6px;box-shadow:0 1px 0 rgba(23,26,18,.04),0 12px 30px -18px rgba(0,0,0,.35)}
+
+  .map-head,.p-head{background:var(--card);color:var(--ink-soft);border-bottom:2px dashed var(--accent)}
+  .map-head .mh-l,.map-head .mh-r{color:var(--ink-soft)}
+  .clock-tile .num{background:var(--card);border:1px solid var(--edge);color:var(--accent);box-shadow:none}
+  .seg button.sel{background:var(--ink);color:var(--paper)}
+  .ghostbtn{color:var(--ink)}
+  .ghostbtn:hover{border-color:var(--accent);color:var(--accent)}
+  table.sb th{background:transparent;color:var(--ink-soft)}
+
+</style>
+<!-- MJ uniform chrome: sticky header + footer styles, driven by the page tokens so both themes work -->
+<style>
+  header.bar{padding:0;position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--edge)}
+  .bar .bar-wrap{display:flex;align-items:center;justify-content:space-between;height:60px;
+    max-width:1080px;margin:0 auto;padding:0 24px}
+  .bar .wordmark{font-family:var(--disp);font-weight:800;
+    letter-spacing:.14em;text-transform:uppercase;font-size:.95rem;text-decoration:none;color:var(--ink);
+    display:inline-flex;align-items:center;gap:.5em}
+  .bar .wordmark .ball{width:15px;height:15px;border-radius:50%;background:var(--card);
+    border:1.5px solid var(--accent);position:relative;display:inline-block}
+  .bar .wordmark .ball::before,.bar .wordmark .ball::after{content:"";position:absolute;inset:2px 4px;
+    border:1px solid var(--accent);border-top:0;border-bottom:0;border-radius:50%}
+  nav.top{display:flex;gap:22px}
+  nav.top a{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink-soft);padding:6px 0;border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s}
+  nav.top a:hover{color:var(--ink);border-color:var(--accent)}
+  @media (max-width:620px){nav.top{display:none}}
+  nav.top .menu{position:relative;display:flex;align-items:center}
+  nav.top .menu > a .caret{font-size:.85em;color:var(--accent)}
+  nav.top .menu-list{position:absolute;top:100%;left:50%;transform:translateX(-50%);min-width:200px;
+    padding:6px 0;background:var(--card);border:1px solid var(--edge);border-top:2px dashed var(--accent);
+    border-radius:0 0 6px 6px;box-shadow:0 1px 0 rgba(23,26,18,.04),0 12px 30px -18px rgba(0,0,0,.45);
+    display:none;flex-direction:column}
+  nav.top .menu:hover .menu-list,nav.top .menu:focus-within .menu-list{display:flex}
+  nav.top .menu-list a{display:block;padding:10px 16px;border-bottom:0;white-space:nowrap}
+  nav.top .menu-list a:hover{color:var(--ink);background:color-mix(in srgb,var(--green-ok) 12%,transparent)}
+  footer.site-foot{border-top:2px dashed var(--accent);margin-top:22px;padding:38px 0 48px;background:transparent}
+  footer.site-foot .foot-grid{display:flex;justify-content:space-between;align-items:flex-end;gap:28px;
+    flex-wrap:wrap;max-width:1080px;margin:0 auto;padding:0 24px}
+  footer.site-foot .foot-name{font-family:var(--disp);font-weight:800;
+    text-transform:uppercase;font-size:clamp(1.6rem,5vw,2.4rem);letter-spacing:-.01em;line-height:1;color:var(--ink)}
+  footer.site-foot .foot-sub{color:var(--ink-soft);margin-top:12px;max-width:54ch;font-size:16px;line-height:1.6}
+  footer.site-foot .foot-links{display:flex;flex-direction:column;gap:8px}
+  footer.site-foot .foot-links a{font-family:var(--mono);font-size:.82rem;letter-spacing:.04em;
+    color:var(--ink-soft);text-decoration:none}
+  footer.site-foot .foot-links a:hover{color:var(--accent)}
+  footer.site-foot .credit{max-width:1080px;margin:26px auto 0;padding:0 24px;font-family:var(--mono);
+    font-size:12px;color:var(--ink-soft);line-height:1.8}
+  footer.site-foot .credit b{color:var(--ink)}
+  footer.site-foot .copyright{max-width:1080px;margin:14px auto 0;padding:0 24px;font-family:var(--mono);
+    font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+</style>
+<header class="bar">
+  <div class="bar-wrap">
+    <a class="wordmark" href="/"><span class="ball" aria-hidden="true"></span> Matt Jones</a>
+    <nav class="top" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+      <a href="/portfolio/">Portfolio</a>
+      <div class="menu">
+        <a href="/portfolio/#software" aria-haspopup="true">Software <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/llmadness/">LLMAdness</a>
+          <a href="/cry-wolf/">Cry Wolf</a>
+          <a href="/the-bullzen/">The Bullzen</a>
+          <a href="/windhover/">Windhover</a>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="/portfolio/#baseball" aria-haspopup="true">Baseball <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/magic-number/">Magic Number</a>
+          <a href="/black-ink/">Black Ink</a>
+          <a href="/scouting-report/">Scouting Report</a>
+        </div>
+      </div>
+      <a href="/box-score/">Box Score</a>
+      <a href="/calendar/">Book a time</a>
+    </nav>
+  </div>
+</header>
+<!-- end MJ uniform chrome header -->
+
+<header class="wrap">
+  <div class="eyebrow">A circle-vs-polygon geofencing sandbox · live geometry · no map tiles, no libraries</div>
+  <div class="wordmark">
+    <h1>CRY WOLF</h1>
+    <span class="clock-tile"><span class="num" id="simClock">11:47:00 AM</span><span class="lbl">sim clock</span></span>
+  </div>
+  <p class="dek">Circle geofences fire arrival events from the freeway. Polygon fences fire at the property line. <b>Run a truck past a distribution center and read the event log</b> — the circle cries wolf, the polygon stays quiet.</p>
+  <p class="howto"><b>1</b> · pick a route &nbsp; <b>2</b> · press run &nbsp; <b>3</b> · read the log &nbsp;·&nbsp; between runs: drag the <b style="color:var(--green-ok)">green corners</b> or the <b>amber radius</b></p>
+</header>
+
+<main class="wrap">
+  <div class="mapcard">
+    <div class="map-head">
+      <span class="mh-l">SEC. 12 — HARRIS CO. (FICTIONAL PLAT)</span>
+      <span class="mh-r">100 m ═ · N ↑ · fences are editable between runs</span>
+    </div>
+    <svg id="field" viewBox="0 0 1000 620" xmlns="http://www.w3.org/2000/svg" aria-label="Geofencing sandbox map"></svg>
+    <div class="statusrow">
+      <div class="st"><div class="k">TRUCK</div><div class="v out" id="stTruck">off property</div></div>
+      <div class="st"><div class="k">CIRCLE</div><div class="v out" id="stCirc">outside</div></div>
+      <div class="st"><div class="k">POLYGON</div><div class="v out" id="stPoly">outside</div></div>
+    </div>
+    <div class="legend">
+      <span class="lg"><span class="sw" style="border-color:var(--green-ok)"></span>polygon fence</span>
+      <span class="lg"><span class="sw" style="border-color:var(--amber-ink); border-top-style:dashed"></span>circle fence</span>
+      <span class="lg"><span class="sw" style="border-color:var(--ink); border-top-style:dotted"></span>property line (truth)</span>
+      <span class="lg"><span class="dotsw" style="background:var(--ink)"></span>truck ping</span>
+    </div>
+  </div>
+
+  <div class="panels">
+    <div>
+      <div class="panel">
+        <div class="p-head">EVENT LOG</div>
+        <div class="p-body log" id="log"><div class="empty">— pick a route and press run —</div></div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <div class="p-head">SCOREBOARD — WHAT EACH FENCE <i>REPORTED</i> VS WHAT HAPPENED</div>
+        <div class="p-body">
+          <table class="sb" id="sbTable">
+            <thead><tr><th></th><th>ACTUAL</th><th>POLYGON</th><th>CIRCLE</th></tr></thead>
+            <tbody>
+              <tr><td>ARRIVAL</td><td id="sb-arr-a">—</td><td id="sb-arr-p">—</td><td id="sb-arr-c">—</td></tr>
+              <tr><td>DEPARTURE</td><td id="sb-dep-a">—</td><td id="sb-dep-p">—</td><td id="sb-dep-c">—</td></tr>
+              <tr><td>DWELL</td><td id="sb-dw-a">—</td><td id="sb-dw-p">—</td><td id="sb-dw-c">—</td></tr>
+              <tr><td>FALSE EVENTS</td><td id="sb-fe-a">—</td><td id="sb-fe-p">—</td><td id="sb-fe-c">—</td></tr>
+            </tbody>
+          </table>
+          <div class="sb-note">Run a route to compare what each fence <i>reports</i> against what actually happened. A "false event" is a fence visit during which the truck never touched the property.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <div class="p-head">CONTROLS</div>
+        <div class="p-body">
+          <div class="ctl-row">
+            <span class="ctl-lbl">ROUTE</span>
+            <div class="seg" id="routeSeg">
+              <button data-r="0" class="sel">THE DELIVERY</button><button data-r="1">THE DRIVE-BY</button><button data-r="2">THE WRONG DOCK</button>
+            </div>
+          </div>
+          <div class="ctl-row">
+            <button class="runbtn" id="runBtn">▶ RUN ROUTE</button>
+            <button class="ghostbtn" id="resetBtn">↺ RESET</button>
+            <span class="ctl-lbl" style="min-width:auto">SPEED</span>
+            <div class="seg" id="speedSeg">
+              <button data-s="1" class="sel">1×</button><button data-s="2">2×</button><button data-s="4">4×</button>
+            </div>
+          </div>
+          <div class="ctl-row">
+            <span class="ctl-lbl">FENCES</span>
+            <label class="ck"><input type="checkbox" id="ckCirc" checked> circle</label>
+            <label class="ck"><input type="checkbox" id="ckPoly" checked> polygon</label>
+            <label class="ck"><input type="checkbox" id="ckMath"> show the math</label>
+          </div>
+          <div class="ctl-row">
+            <span class="ctl-lbl">RADIUS</span>
+            <input type="range" id="radSlider" min="140" max="480" step="10" value="320">
+            <span class="radlbl" id="radLbl">320 m</span>
+          </div>
+          <div class="ctl-row">
+            <button class="ghostbtn" id="fenceReset">RESET FENCES</button>
+            <button class="ghostbtn" id="dlGeo">↓ GEOJSON</button>
+            <button class="ghostbtn" id="dlKml">↓ KML</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="methods">
+    <h2>UNDER THE HOOD</h2>
+    <div class="mcards">
+      <div class="mcard">
+        <h3>Polygon test — ray casting</h3>
+        <p>Cast a ray from the truck's GPS ping to the edge of the map and count how many fence edges it crosses. <code>odd = inside</code>, <code>even = outside</code>. It's O(n) per ping and works for any shape — including boundaries with notches, easements, and a neighbor's driveway carved out. Flip on "show the math" and watch the crossings while the truck moves.</p>
+      </div>
+      <div class="mcard">
+        <h3>Circle test — one distance check</h3>
+        <p>Measure the ping's distance to the fence center and compare it to the radius: <code>d &lt; r = inside</code>. On a real globe that distance comes from the haversine formula on lat/lon; this sandbox projects everything onto a flat local plane in meters first — which is exactly what production geofence engines do before testing millions of pings.</p>
+      </div>
+      <div class="mcard">
+        <h3>Why anyone cares</h3>
+        <p>A fence that fires from the freeway inflates dwell time, corrupts detention data, and buries dispatchers in alerts they learn to ignore. Shrinking the radius doesn't fix it — it just trades false arrivals for missed ones (try the slider). The fix is a boundary that follows the property line. And a hand-drawn polygon is only as good as the hand that drew it — <b>drag a green corner into the freeway and watch it start lying too.</b></p>
+      </div>
+    </div>
+    <p class="fineprint">Scale: 1 unit = 1 meter on a local planar projection anchored at 29.7215° N, 95.2810° W (Houston's East End — the plat is fictional). Exports convert back to WGS-84 lat/lon. No libraries, no map tiles: one HTML file and math from scratch.</p>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-name">Let's talk ball.</div>
+      <p class="foot-sub">Interested in what I'm building here? Drop a line — I answer.</p>
+    </div>
+    <div class="foot-links">
+      <a href="mailto:mscottjones24@gmail.com">mscottjones24@gmail.com</a>
+      <a href="https://linkedin.com/in/mattjoneshtx">linkedin.com/in/mattjoneshtx</a>
+      <a href="/calendar/">Book a time →</a>
+    </div>
+  </div>
+  <div class="credit">A weekend build by <b>Matt Jones</b> · moving to Austin, TX in October 2026 — sibling of <b>Windhover</b>, the geofence QA/QC simulator.</div>
+  <div class="copyright">© Matt Jones, 2026 — A website about nothing.</div>
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   CRY WOLF v2 — circle vs polygon geofencing, from scratch.
+   Local plane: 1 SVG unit = 1 meter. Anchor 29.7215N, -95.2810W
+   at scene point (500, 310). North is up (SVG y is south+).
+   ============================================================ */
+const SVGNS = "http://www.w3.org/2000/svg";
+const $ = id => document.getElementById(id);
+
+/* ------------ scene geometry (meters) ------------ */
+const PROP = [[260,215],[780,215],[780,540],[520,560],[260,545]];           // truth: Gulfgate DC property line
+const WAREHOUSE = {x:340, y:320, w:280, h:150};
+const PELICAN = [[800,215],[980,215],[980,545],[800,545]];                   // neighbor parcel
+const DEFAULT_POLY = [[272,227],[766,227],[766,528],[522,546],[272,532]];    // editable polygon fence
+const DEFAULT_CIRC = {cx:480, cy:370, r:320};                                // editable circle fence
+const FWY_EB_Y = 90, SVC_Y = 170;
+
+/* routes: waypoints [x,y] + optional dwell (sim seconds) at a waypoint index */
+const ROUTES = [
+  { name:"THE DELIVERY",
+    pts:[[-40,FWY_EB_Y],[610,FWY_EB_Y],[650,128],[655,SVC_Y],[425,SVC_Y],[428,240],[470,300],[480,318],[480,318],[470,300],[428,240],[425,SVC_Y],[200,SVC_Y],[-40,SVC_Y]],
+    dwellAt:8, dwellSecs:240 },
+  { name:"THE DRIVE-BY",
+    pts:[[-40,FWY_EB_Y],[1040,FWY_EB_Y]] },
+  { name:"THE WRONG DOCK",
+    pts:[[-40,SVC_Y],[840,SVC_Y],[855,240],[860,330],[862,388],[862,388],[860,330],[855,240],[870,SVC_Y],[1040,SVC_Y]],
+    dwellAt:5, dwellSecs:150 }
+];
+
+/* ------------ pure geometry ------------ */
+function pip(px, py, poly){                    // ray casting: odd crossings = inside
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++){
+    const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+    if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+const dist = (x1,y1,x2,y2) => Math.hypot(x2-x1, y2-y1);
+function inCircle(x, y, c){ return dist(x, y, c.cx, c.cy) <= c.r; }
+
+/* sample a route into pings: [{x,y,t}] — t in sim seconds, truck ~10 m/s */
+function samplePath(route, stepMeters){
+  const pts = route.pts, out = [];
+  let t = 0;
+  for (let i = 0; i < pts.length - 1; i++){
+    const [x1,y1] = pts[i], [x2,y2] = pts[i+1];
+    const L = dist(x1,y1,x2,y2);
+    const n = Math.max(1, Math.round(L / stepMeters));
+    for (let k = 0; k < n; k++){
+      const f = k / n;
+      out.push({ x: x1 + (x2-x1)*f, y: y1 + (y2-y1)*f, t });
+      t += (L / n) / 10;                       // 10 m/s
+    }
+    if (route.dwellAt === i + 1 && route.dwellSecs){
+      out.push({ x: x2, y: y2, t });
+      t += route.dwellSecs;
+    }
+  }
+  const last = pts[pts.length-1];
+  out.push({ x:last[0], y:last[1], t });
+  return out;
+}
+
+/* score a run: per-column arrival/departure/dwell + false intervals per fence */
+function scoreRun(samples, polyFence, circFence){
+  const cols = { a:{arr:null,dep:null,fe:0}, p:{arr:null,dep:null,fe:0}, c:{arr:null,dep:null,fe:0} };
+  const events = [];
+  let sA=false, sP=false, sC=false;
+  let intP=null, intC=null;                    // open fence intervals: {start, touched}
+  for (const s of samples){
+    const inA = pip(s.x, s.y, PROP);
+    const inP = pip(s.x, s.y, polyFence);
+    const inC = inCircle(s.x, s.y, circFence);
+    if (inA !== sA){
+      events.push({ t:s.t, col:"a", type:inA?"ARRIVAL":"DEPARTURE" });
+      if (inA){ if(cols.a.arr===null) cols.a.arr=s.t; } else cols.a.dep=s.t;
+      sA = inA;
+    }
+    if (inP !== sP){
+      events.push({ t:s.t, col:"p", type:inP?"ARRIVAL":"DEPARTURE" });
+      if (inP){ if(cols.p.arr===null) cols.p.arr=s.t; intP={start:s.t, touched:inA}; }
+      else { cols.p.dep=s.t; if(intP && !intP.touched){ cols.p.fe+=2; events[events.length-1].wolf=true; } intP=null; }
+      sP = inP;
+    } else if (intP && inA){ intP.touched = true; }
+    if (inC !== sC){
+      events.push({ t:s.t, col:"c", type:inC?"ARRIVAL":"DEPARTURE" });
+      if (inC){ if(cols.c.arr===null) cols.c.arr=s.t; intC={start:s.t, touched:inA}; }
+      else { cols.c.dep=s.t; if(intC && !intC.touched){ cols.c.fe+=2; events[events.length-1].wolf=true; } intC=null; }
+      sC = inC;
+    } else if (intC && inA){ intC.touched = true; }
+  }
+  for (const k of ["a","p","c"]){
+    const c = cols[k];
+    c.dwell = (c.arr!==null && c.dep!==null && c.dep>c.arr) ? c.dep - c.arr : null;
+  }
+  return { cols, events };
+}
+
+/* ------------ time & formatting ------------ */
+const SIM_START = 11*3600 + 47*60;             // 11:47:00 AM in seconds
+function clock(t){
+  let s = Math.floor(SIM_START + t), h = Math.floor(s/3600)%24, m = Math.floor(s/60)%60, sec = s%60;
+  const ap = h < 12 ? "AM" : "PM"; h = h%12; if (h===0) h = 12;
+  return h + ":" + String(m).padStart(2,"0") + ":" + String(sec).padStart(2,"0") + " " + ap;
+}
+function mins(t){ if (t===null) return "—"; const m = Math.floor(t/60), s = Math.round(t%60); return m + "m " + String(s).padStart(2,"0") + "s"; }
+
+/* ------------ state ------------ */
+let polyFence = DEFAULT_POLY.map(p => p.slice());
+let circFence = { ...DEFAULT_CIRC };
+let routeIdx = 0, speed = 1, running = false, raf = null;
+let samples = [], simT = 0, sampleIdx = 0, lastStates = {a:false,p:false,c:false}, openInt = {p:null,c:null};
+let liveCols = null;
+
+/* ------------ svg build ------------ */
+const svg = $("field");
+function el(tag, attrs){ const n = document.createElementNS(SVGNS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; }
+function ptsStr(poly){ return poly.map(p => p.join(",")).join(" "); }
+
+function buildScene(){
+  svg.innerHTML = "";
+  const g = (id) => { const n = el("g", {id}); svg.appendChild(n); return n; };
+  const ground = g("ground");
+  // freeway
+  ground.appendChild(el("rect", {x:0, y:40, width:1000, height:70, fill:"#CBD3BC"}));
+  ground.appendChild(el("line", {x1:0, y1:75, x2:1000, y2:75, stroke:"#F2F4EC", "stroke-width":2, "stroke-dasharray":"18 14"}));
+  txt(ground, 14, 34, "EAST LOOP FWY — WB ←", 11); txt(ground, 14, 122, "→ EB", 11);
+  // service road
+  ground.appendChild(el("rect", {x:0, y:152, width:1000, height:36, fill:"#D5DCC6"}));
+  txt(ground, 720, 147, "SERVICE ROAD", 10);
+  // parcels
+  ground.appendChild(el("polygon", {points:ptsStr(PROP), fill:"#E2E8CF"}));
+  ground.appendChild(el("polygon", {points:ptsStr(PELICAN), fill:"#E5E9D6"}));
+  // property lines (truth)
+  ground.appendChild(el("polygon", {points:ptsStr(PROP), fill:"none", stroke:"#1B3325", "stroke-width":2.5, "stroke-dasharray":"3 6"}));
+  ground.appendChild(el("polygon", {points:ptsStr(PELICAN), fill:"none", stroke:"#7A8A73", "stroke-width":1.5, "stroke-dasharray":"3 6"}));
+  // buildings
+  ground.appendChild(el("rect", {x:WAREHOUSE.x, y:WAREHOUSE.y, width:WAREHOUSE.w, height:WAREHOUSE.h, fill:"#C2CBAE", stroke:"#9AA98C"}));
+  ground.appendChild(el("rect", {x:840, y:300, width:110, height:120, fill:"#CDD4BC", stroke:"#A5B195"}));
+  txt(ground, 400, 402, "GULFGATE DISTRIBUTION CENTER", 12, "#47604F");
+  txt(ground, 418, 420, "WAREHOUSE 4", 10, "#7A8A73");
+  txt(ground, 815, 290, "PELICAN PACKAGING CO.", 10, "#7A8A73");
+  txt(ground, 408, 208, "GATE", 9, "#47604F");
+  // scale bar + north
+  ground.appendChild(el("line", {x1:30, y1:596, x2:130, y2:596, stroke:"#1B3325", "stroke-width":3}));
+  txt(ground, 30, 588, "100 m", 10); txt(ground, 960, 596, "N ↑", 12);
+
+  g("routeGhost"); g("circleG"); g("polyG"); g("mathG"); g("truckG"); g("handlesG");
+  drawFences(); drawRouteGhost(); drawTruck(null);
+}
+function txt(parent, x, y, s, size, fill){
+  const t = el("text", {x, y, "font-family":"'IBM Plex Mono',monospace", "font-size":size, fill:fill||"#47604F", "letter-spacing":".08em"});
+  t.textContent = s; parent.appendChild(t);
+}
+
+function drawFences(){
+  const cg = $("circleG"), pg = $("polyG"), hg = $("handlesG");
+  cg.innerHTML = ""; pg.innerHTML = ""; hg.innerHTML = "";
+  if ($("ckCirc").checked){
+    cg.appendChild(el("circle", {cx:circFence.cx, cy:circFence.cy, r:circFence.r, fill:"rgba(242,178,62,.10)", stroke:"#8F5D0C", "stroke-width":2.5, "stroke-dasharray":"10 7"}));
+    if (!running){
+      const hx = circFence.cx + circFence.r, hy = circFence.cy;
+      const h = el("circle", {cx:hx, cy:hy, r:9, fill:"#F2B23E", stroke:"#8F5D0C", "stroke-width":2, cursor:"ew-resize", "data-handle":"rad"});
+      hg.appendChild(h);
+    }
+  }
+  if ($("ckPoly").checked){
+    pg.appendChild(el("polygon", {points:ptsStr(polyFence), fill:"rgba(46,125,79,.10)", stroke:"#2F6B45", "stroke-width":2.5}));
+    if (!running){
+      polyFence.forEach((p, i) => {
+        const h = el("rect", {x:p[0]-7, y:p[1]-7, width:14, height:14, fill:"#2F6B45", stroke:"#F2F4EC", "stroke-width":2, cursor:"grab", "data-handle":"v"+i});
+        hg.appendChild(h);
+      });
+    }
+  }
+}
+function drawRouteGhost(){
+  const rg = $("routeGhost"); rg.innerHTML = "";
+  const pts = ROUTES[routeIdx].pts;
+  rg.appendChild(el("polyline", {points:ptsStr(pts), fill:"none", stroke:"#9AA98C", "stroke-width":2, "stroke-dasharray":"2 8", "stroke-linecap":"round"}));
+}
+function drawTruck(pos){
+  const tg = $("truckG"); tg.innerHTML = "";
+  if (!pos) return;
+  tg.appendChild(el("circle", {cx:pos.x, cy:pos.y, r:12, fill:"rgba(15,35,26,.15)"}));
+  tg.appendChild(el("circle", {cx:pos.x, cy:pos.y, r:6.5, fill:"#0F231A", stroke:"#F2B23E", "stroke-width":2}));
+}
+function drawMath(pos){
+  const mg = $("mathG"); mg.innerHTML = "";
+  if (!$("ckMath").checked || !pos) return;
+  // circle: distance line
+  if ($("ckCirc").checked){
+    mg.appendChild(el("line", {x1:pos.x, y1:pos.y, x2:circFence.cx, y2:circFence.cy, stroke:"#8F5D0C", "stroke-width":1.5, "stroke-dasharray":"4 4"}));
+    const d = Math.round(dist(pos.x, pos.y, circFence.cx, circFence.cy));
+    txt(mg, Math.min(pos.x, circFence.cx)+14, Math.min(pos.y, circFence.cy)-8, "d=" + d + "m  r=" + circFence.r + "m", 11, "#8F5D0C");
+  }
+  // polygon: ray + crossings
+  if ($("ckPoly").checked){
+    mg.appendChild(el("line", {x1:pos.x, y1:pos.y, x2:1000, y2:pos.y, stroke:"#2F6B45", "stroke-width":1.5, "stroke-dasharray":"4 4"}));
+    let n = 0;
+    for (let i = 0, j = polyFence.length - 1; i < polyFence.length; j = i++){
+      const [xi,yi] = polyFence[i], [xj,yj] = polyFence[j];
+      if ((yi > pos.y) !== (yj > pos.y)){
+        const xc = (xj - xi) * (pos.y - yi) / (yj - yi) + xi;
+        if (xc > pos.x){ n++; mg.appendChild(el("circle", {cx:xc, cy:pos.y, r:4.5, fill:"#B03A2C"})); }
+      }
+    }
+    txt(mg, Math.min(pos.x + 16, 830), pos.y - 10, "crossings: " + n + " → " + (n % 2 ? "INSIDE" : "outside"), 11, "#2F6B45");
+  }
+}
+
+/* ------------ run loop ------------ */
+function startRun(){
+  if (running) return;
+  running = true; $("runBtn").disabled = true;
+  samples = samplePath(ROUTES[routeIdx], 6);
+  simT = 0; sampleIdx = 0;
+  lastStates = {a:false, p:false, c:false}; openInt = {p:null, c:null};
+  liveCols = { a:{arr:null,dep:null,fe:0}, p:{arr:null,dep:null,fe:0}, c:{arr:null,dep:null,fe:0} };
+  $("log").innerHTML = "";
+  logLine(0, "act", "▶ " + ROUTES[routeIdx].name + " — truck rolling");
+  clearBoard(); drawFences();
+  let prev = performance.now();
+  function frame(now){
+    const dt = (now - prev) / 1000; prev = now;
+    simT += dt * 34 * speed;                    // sim seconds per real second
+    while (sampleIdx < samples.length - 1 && samples[sampleIdx + 1].t <= simT) sampleIdx++;
+    const s = samples[sampleIdx];
+    // interpolate between samples for smooth motion
+    let pos = s;
+    if (sampleIdx < samples.length - 1){
+      const nx = samples[sampleIdx + 1];
+      const span = nx.t - s.t;
+      if (span > 0){
+        const f = Math.min(1, (simT - s.t) / span);
+        pos = { x: s.x + (nx.x - s.x) * f, y: s.y + (nx.y - s.y) * f, t: simT };
+      }
+    }
+    stepStates(pos);
+    drawTruck(pos); drawMath(pos);
+    $("simClock").textContent = clock(simT);
+    if (sampleIdx >= samples.length - 1){ endRun(); return; }
+    raf = requestAnimationFrame(frame);
+  }
+  raf = requestAnimationFrame(frame);
+}
+function stepStates(pos){
+  const inA = pip(pos.x, pos.y, PROP);
+  const inP = $("ckPoly").checked && pip(pos.x, pos.y, polyFence);
+  const inC = $("ckCirc").checked && inCircle(pos.x, pos.y, circFence);
+  if (inA !== lastStates.a){
+    logLine(pos.t, "act", inA ? "● ACTUAL — truck crossed the property line (ARRIVAL)" : "● ACTUAL — truck left the property (DEPARTURE)");
+    if (inA){ if (liveCols.a.arr === null) liveCols.a.arr = pos.t; } else liveCols.a.dep = pos.t;
+    lastStates.a = inA;
+  }
+  if (inP !== lastStates.p){
+    if (inP){ if (liveCols.p.arr === null) liveCols.p.arr = pos.t; openInt.p = {touched:inA}; logLine(pos.t, "poly", "POLYGON fence → ARRIVAL event"); }
+    else {
+      liveCols.p.dep = pos.t;
+      const wolf = openInt.p && !openInt.p.touched;
+      if (wolf) liveCols.p.fe += 2;
+      logLine(pos.t, wolf ? "wolf" : "poly", "POLYGON fence → DEPARTURE event" + (wolf ? "  🐺 FALSE VISIT — never on property" : ""));
+      openInt.p = null;
+    }
+    lastStates.p = inP;
+  } else if (openInt.p && inA){ openInt.p.touched = true; }
+  if (inC !== lastStates.c){
+    if (inC){ if (liveCols.c.arr === null) liveCols.c.arr = pos.t; openInt.c = {touched:inA}; logLine(pos.t, "circ", "CIRCLE fence → ARRIVAL event"); }
+    else {
+      liveCols.c.dep = pos.t;
+      const wolf = openInt.c && !openInt.c.touched;
+      if (wolf) liveCols.c.fe += 2;
+      logLine(pos.t, wolf ? "wolf" : "circ", "CIRCLE fence → DEPARTURE event" + (wolf ? "  🐺 FALSE VISIT — cried wolf" : ""));
+      openInt.c = null;
+    }
+    lastStates.c = inC;
+  } else if (openInt.c && inA){ openInt.c.touched = true; }
+  setStatus("stTruck", inA, "ON PROPERTY", "off property");
+  setStatus("stCirc", inC, "INSIDE", "outside");
+  setStatus("stPoly", inP, "INSIDE", "outside");
+}
+function setStatus(id, on, a, b){
+  const n = $(id); n.textContent = on ? a : b;
+  n.className = "v " + (on ? "in" : "out");
+}
+function endRun(){
+  running = false; $("runBtn").disabled = false;
+  if (raf) cancelAnimationFrame(raf);
+  logLine(simT, "act", "■ route complete — read the scoreboard");
+  fillBoard(liveCols);
+  drawFences();
+}
+function resetRun(){
+  if (raf) cancelAnimationFrame(raf);
+  running = false; $("runBtn").disabled = false;
+  simT = 0; $("simClock").textContent = clock(0);
+  $("log").innerHTML = '<div class="empty">— pick a route and press run —</div>';
+  clearBoard(); drawTruck(null); $("mathG").innerHTML = "";
+  setStatus("stTruck", false, "ON PROPERTY", "off property");
+  setStatus("stCirc", false, "INSIDE", "outside");
+  setStatus("stPoly", false, "INSIDE", "outside");
+  drawFences();
+}
+function logLine(t, cls, msg){
+  const log = $("log");
+  const d = document.createElement("div");
+  d.className = "le " + cls;
+  d.innerHTML = '<span class="t">' + clock(t) + '</span><span class="m"></span>';
+  d.querySelector(".m").textContent = msg;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function clearBoard(){
+  ["arr","dep","dw","fe"].forEach(r => ["a","p","c"].forEach(c => { const n = $("sb-"+r+"-"+c); n.textContent = "—"; n.className = ""; }));
+}
+function fillBoard(cols){
+  const put = (r, c, v, cls) => { const n = $("sb-"+r+"-"+c); n.textContent = v; n.className = cls || ""; };
+  ["a","p","c"].forEach(c => {
+    const d = cols[c];
+    put("arr", c, d.arr === null ? "—" : clock(d.arr));
+    put("dep", c, d.dep === null ? "—" : clock(d.dep));
+    const dw = (d.arr !== null && d.dep !== null && d.dep > d.arr) ? d.dep - d.arr : null;
+    put("dw", c, mins(dw), c !== "a" && dw !== null && cols.a.dwell !== undefined ? "" : "");
+    put("fe", c, String(d.fe), d.fe > 0 ? "bad" : "good");
+  });
+  // dwell coloring: compare fences to actual
+  const aDw = (cols.a.arr !== null && cols.a.dep !== null) ? cols.a.dep - cols.a.arr : null;
+  ["p","c"].forEach(c => {
+    const d = cols[c];
+    const dw = (d.arr !== null && d.dep !== null && d.dep > d.arr) ? d.dep - d.arr : null;
+    if (dw !== null && aDw !== null){
+      $("sb-dw-"+c).className = (dw - aDw) > 90 ? "bad" : "good";
+    } else if (dw !== null && aDw === null){
+      $("sb-dw-"+c).className = "bad";
+    }
+  });
+}
+
+/* ------------ fence editing ------------ */
+let drag = null;
+function svgPoint(evt){
+  const pt = svg.createSVGPoint();
+  pt.x = evt.clientX; pt.y = evt.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+svg.addEventListener("pointerdown", e => {
+  if (running) return;
+  const h = e.target.getAttribute && e.target.getAttribute("data-handle");
+  if (!h) return;
+  drag = h; svg.setPointerCapture(e.pointerId); e.preventDefault();
+});
+svg.addEventListener("pointermove", e => {
+  if (!drag) return;
+  const p = svgPoint(e);
+  if (drag === "rad"){
+    circFence.r = Math.max(140, Math.min(480, Math.round(dist(p.x, p.y, circFence.cx, circFence.cy) / 10) * 10));
+    $("radSlider").value = circFence.r; $("radLbl").textContent = circFence.r + " m";
+  } else if (drag.startsWith("v")){
+    const i = +drag.slice(1);
+    polyFence[i][0] = Math.max(10, Math.min(990, Math.round(p.x)));
+    polyFence[i][1] = Math.max(10, Math.min(610, Math.round(p.y)));
+  }
+  drawFences();
+});
+svg.addEventListener("pointerup", () => { drag = null; });
+
+/* ------------ controls ------------ */
+$("routeSeg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  if (running) return;
+  routeIdx = +b.dataset.r;
+  $("routeSeg").querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+  drawRouteGhost(); resetRun();
+}));
+$("speedSeg").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  speed = +b.dataset.s;
+  $("speedSeg").querySelectorAll("button").forEach(x => x.classList.toggle("sel", x === b));
+}));
+$("runBtn").addEventListener("click", startRun);
+$("resetBtn").addEventListener("click", resetRun);
+$("ckCirc").addEventListener("change", drawFences);
+$("ckPoly").addEventListener("change", drawFences);
+$("ckMath").addEventListener("change", () => { if (!running) $("mathG").innerHTML = ""; });
+$("radSlider").addEventListener("input", e => {
+  circFence.r = +e.target.value; $("radLbl").textContent = circFence.r + " m"; drawFences();
+});
+$("fenceReset").addEventListener("click", () => {
+  if (running) return;
+  polyFence = DEFAULT_POLY.map(p => p.slice());
+  circFence = { ...DEFAULT_CIRC };
+  $("radSlider").value = circFence.r; $("radLbl").textContent = circFence.r + " m";
+  drawFences();
+});
+
+/* ------------ exports (local meters -> WGS-84) ------------ */
+const LAT0 = 29.7215, LON0 = -95.2810, X0 = 500, Y0 = 310;
+function toLL(x, y){
+  const lat = LAT0 + (Y0 - y) / 111320;
+  const lon = LON0 + (x - X0) / (111320 * Math.cos(LAT0 * Math.PI / 180));
+  return [ +lon.toFixed(6), +lat.toFixed(6) ];
+}
+function circleRing(c, n){
+  const ring = [];
+  for (let i = 0; i <= n; i++){
+    const a = 2 * Math.PI * i / n;
+    ring.push(toLL(c.cx + c.r * Math.cos(a), c.cy + c.r * Math.sin(a)));
+  }
+  return ring;
+}
+function download(name, mime, text){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type:mime}));
+  a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+$("dlGeo").addEventListener("click", () => {
+  const polyRing = polyFence.map(p => toLL(p[0], p[1])); polyRing.push(polyRing[0]);
+  const gj = { type:"FeatureCollection", features:[
+    { type:"Feature", properties:{ name:"Polygon fence", tool:"Cry Wolf" }, geometry:{ type:"Polygon", coordinates:[polyRing] } },
+    { type:"Feature", properties:{ name:"Circle fence (64-gon)", radius_m:circFence.r }, geometry:{ type:"Polygon", coordinates:[circleRing(circFence, 64)] } }
+  ]};
+  download("cry-wolf-fences.geojson", "application/geo+json", JSON.stringify(gj, null, 2));
+});
+$("dlKml").addEventListener("click", () => {
+  const ring = arr => arr.map(c => c[0] + "," + c[1] + ",0").join(" ");
+  const polyRing = polyFence.map(p => toLL(p[0], p[1])); polyRing.push(polyRing[0]);
+  const kml = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>Cry Wolf fences</name>' +
+    '<Placemark><name>Polygon fence</name><Polygon><outerBoundaryIs><LinearRing><coordinates>' + ring(polyRing) + '</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>' +
+    '<Placemark><name>Circle fence (' + circFence.r + ' m)</name><Polygon><outerBoundaryIs><LinearRing><coordinates>' + ring(circleRing(circFence, 64)) + '</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>' +
+    '</Document></kml>';
+  download("cry-wolf-fences.kml", "application/vnd.google-earth.kml+xml", kml);
+});
+
+/* ------------ boot ------------ */
+buildScene();
+$("simClock").textContent = clock(0);
+</script>
+
+
+</body></html>
