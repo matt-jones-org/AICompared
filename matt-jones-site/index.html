@@ -1,0 +1,411 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style><title>Matt Jones | A Website about Nothing</title>
+<link rel="icon" href="/favicon.svg"></head><body>
+
+<style>
+  :root {
+    --paper:   #F2F4EC;
+    --card:    #FBFCF7;
+    --ink:     #171A12;
+    --muted:   #5B6152;
+    --line:    #C9CFBE;
+    --stitch:  #CC3B2E;
+    --grass:   #2F6B45;
+    --shadow:  0 1px 0 rgba(23,26,18,.04), 0 12px 30px -18px rgba(23,26,18,.35);
+    --maxw: 1080px;
+    --f-display: "Helvetica Neue", "Arial Narrow", Arial, sans-serif;
+    --f-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --f-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:  #0D1310;
+      --card:   #141B14;
+      --ink:    #EDEFE6;
+      --muted:  #9AA394;
+      --line:   #2A3326;
+      --stitch: #E4573F;
+      --grass:  #4E9E6A;
+      --shadow: 0 1px 0 rgba(0,0,0,.3), 0 18px 40px -22px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper:#F2F4EC; --card:#FBFCF7; --ink:#171A12; --muted:#5B6152;
+    --line:#C9CFBE; --stitch:#CC3B2E; --grass:#2F6B45;
+    --shadow:0 1px 0 rgba(23,26,18,.04), 0 12px 30px -18px rgba(23,26,18,.35);
+  }
+  :root[data-theme="dark"] {
+    --paper:#0D1310; --card:#141B14; --ink:#EDEFE6; --muted:#9AA394;
+    --line:#2A3326; --stitch:#E4573F; --grass:#4E9E6A;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -22px rgba(0,0,0,.8);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--f-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--stitch);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .mono { font-family: var(--f-mono); }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* ---- Stitch: the signature detail (baseball lacing) ---- */
+  .stitch {
+    height: 0;
+    border-top: 2px dashed var(--stitch);
+    opacity: .8;
+  }
+
+  /* ---- Top bar ---- */
+  header.bar {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: saturate(1.1) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .wordmark {
+    font-family: var(--f-display);
+    font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    font-size: .95rem; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .5em;
+  }
+  .wordmark .ball {
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--card);
+    border: 1.5px solid var(--stitch);
+    position: relative; display: inline-block;
+  }
+  .wordmark .ball::before, .wordmark .ball::after {
+    content:""; position:absolute; inset:2px 4px;
+    border:1px solid var(--stitch); border-top:0; border-bottom:0;
+    border-radius: 50%;
+  }
+  nav.top { display: flex; gap: 22px; }
+  nav.top a {
+    font-family: var(--f-mono); font-size: .72rem; letter-spacing: .12em;
+    text-transform: uppercase; text-decoration: none; color: var(--muted);
+    padding: 6px 0; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+  }
+  nav.top a:hover { color: var(--ink); border-color: var(--stitch); }
+  @media (max-width: 620px){ nav.top { display: none; } }
+
+  /* ---- Nav dropdowns (Software / Baseball) ---- */
+  nav.top .menu { position: relative; display: flex; align-items: center; }
+  nav.top .menu > a .caret { font-size: .85em; color: var(--stitch); }
+  nav.top .menu-list {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    min-width: 200px; padding: 6px 0;
+    background: var(--card); border: 1px solid var(--line);
+    border-top: 2px dashed var(--stitch); border-radius: 0 0 6px 6px;
+    box-shadow: var(--shadow);
+    display: none; flex-direction: column;
+  }
+  nav.top .menu:hover .menu-list,
+  nav.top .menu:focus-within .menu-list { display: flex; }
+  nav.top .menu-list a {
+    display: block; padding: 10px 16px; border-bottom: 0;
+    white-space: nowrap;
+  }
+  nav.top .menu-list a:hover {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--grass) 9%, transparent);
+  }
+
+  /* ---- Hero ---- */
+  .hero { padding: clamp(52px, 9vw, 104px) 0 clamp(40px,6vw,64px); }
+  .eyebrow {
+    font-family: var(--f-mono); font-size: .74rem; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--grass); margin: 0 0 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::after { content:""; flex:1; height:1px; background: var(--line); }
+  h1.name {
+    font-family: var(--f-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: .9;
+    margin: 0;
+    font-size: clamp(3.4rem, 15vw, 9.2rem);
+    text-wrap: balance;
+  }
+  .tagline {
+    margin: 18px 0 0;
+    font-family: var(--f-display);
+    font-weight: 700; font-style: italic;
+    font-size: clamp(1.25rem, 3.2vw, 2rem);
+    color: var(--stitch);
+    letter-spacing: -.01em;
+  }
+  .lede {
+    max-width: 46ch; margin: 22px 0 0; font-size: 1.075rem; color: var(--muted);
+  }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .btn {
+    font-family: var(--f-mono); font-size: .78rem; letter-spacing: .08em;
+    text-transform: uppercase; text-decoration: none;
+    padding: 12px 18px; border-radius: 2px; border: 1.5px solid var(--ink);
+    display: inline-flex; align-items: center; gap: .55em;
+    transition: transform .12s ease, background .15s, color .15s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.primary { background: var(--stitch); border-color: var(--stitch); color: #fff; }
+  .btn.primary:hover { background: color-mix(in srgb, var(--stitch) 88%, #000); }
+  .btn.ghost:hover { background: var(--ink); color: var(--paper); }
+
+  /* ---- Section shell ---- */
+  section { padding: clamp(46px, 7vw, 82px) 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
+  .sec-kicker {
+    font-family: var(--f-mono); font-size: .72rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  h2.sec-title {
+    font-family: var(--f-display); font-weight: 800; text-transform: uppercase;
+    letter-spacing: -.01em; line-height: 1; margin: 6px 0 0;
+    font-size: clamp(1.9rem, 5vw, 3.1rem); text-wrap: balance;
+  }
+  .sec-sub { color: var(--muted); margin: 14px 0 0; max-width: 54ch; }
+
+  /* ---- Lineup card (scorecard) ---- */
+  .card {
+    margin-top: 30px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 6px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; border-bottom: 2px dashed var(--stitch);
+    font-family: var(--f-mono); font-size: .72rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  ul.lineup { list-style: none; margin: 0; padding: 4px 0; }
+  ul.lineup li a {
+    display: grid;
+    grid-template-columns: 46px 1fr auto 28px;
+    align-items: center; gap: 16px;
+    padding: 15px 20px; text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    transition: background .14s;
+  }
+  ul.lineup li:last-child a { border-bottom: 0; }
+  ul.lineup li a:hover { background: color-mix(in srgb, var(--grass) 9%, transparent); }
+  .pos {
+    font-family: var(--f-mono); font-weight: 700; font-size: 1.05rem;
+    color: var(--stitch); text-align: center;
+  }
+  .player { font-family: var(--f-display); font-weight: 700; text-transform: uppercase;
+    letter-spacing: .01em; font-size: 1.16rem; }
+  .side {
+    font-family: var(--f-mono); font-size: .66rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+  }
+  .arrow { color: var(--muted); text-align: center; transition: transform .14s, color .14s; }
+  ul.lineup li a:hover .arrow { color: var(--stitch); transform: translateX(3px); }
+  @media (max-width: 560px){
+    ul.lineup li a { grid-template-columns: 34px 1fr 26px; }
+    .side { display: none; }
+  }
+
+  /* ---- Snapshots ---- */
+  .snaps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  @media (max-width: 760px){ .snaps { grid-template-columns: 1fr; } }
+  .snap {
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 22px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 10px; text-decoration: none;
+    transition: transform .12s, border-color .15s;
+  }
+  .snap:hover { transform: translateY(-3px); border-color: var(--stitch); }
+  .snap .tag { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--grass); }
+  .snap h3 { margin: 2px 0 0; font-family: var(--f-display); font-weight: 700;
+    text-transform: uppercase; font-size: 1.15rem; letter-spacing: -.005em; }
+  .snap p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .snap .more { margin-top: auto; font-family: var(--f-mono); font-size: .72rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--stitch); }
+
+  /* ---- Footer ---- */
+  footer {
+    border-top: 2px dashed var(--stitch);
+    padding: 48px 0 60px; margin-top: 20px;
+  }
+  .foot-grid { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; flex-wrap: wrap; }
+  .foot-name { font-family: var(--f-display); font-weight: 800; text-transform: uppercase;
+    font-size: clamp(1.6rem, 5vw, 2.4rem); letter-spacing: -.01em; line-height: 1; }
+  .foot-links { display: flex; flex-direction: column; gap: 8px; }
+  .foot-links a { font-family: var(--f-mono); font-size: .82rem; letter-spacing: .04em;
+    color: var(--muted); text-decoration: none; }
+  .foot-links a:hover { color: var(--stitch); }
+  .copyright { margin-top: 26px; font-family: var(--f-mono); font-size: .72rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+  /* ---- Reveal motion ---- */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn:hover, .snap:hover, ul.lineup li a:hover .arrow { transform: none; }
+  }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="wordmark" href="/"><span class="ball" aria-hidden="true"></span> Matt Jones</a>
+    <nav class="top" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+      <a href="/portfolio/">Portfolio</a>
+      <div class="menu">
+        <a href="/portfolio/#software" aria-haspopup="true">Software <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/llmadness/">LLMAdness</a>
+          <a href="/cry-wolf/">Cry Wolf</a>
+          <a href="/the-bullzen/">The Bullzen</a>
+          <a href="/windhover/">Windhover</a>
+        </div>
+      </div>
+      <div class="menu">
+        <a href="/portfolio/#baseball" aria-haspopup="true">Baseball <span class="caret" aria-hidden="true">▾</span></a>
+        <div class="menu-list">
+          <a href="/magic-number/">Magic Number</a>
+          <a href="/black-ink/">Black Ink</a>
+          <a href="/scouting-report/">Scouting Report</a>
+        </div>
+      </div>
+      <a href="/box-score/">Box Score</a>
+      <a href="/calendar/">Book a time</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow reveal">Austin-bound, October 2026 &nbsp;·&nbsp; Playing ball since 2026</p>
+      <h1 class="name reveal">Matt Jones</h1>
+      <p class="tagline reveal">A Website about Nothing.</p>
+      <p class="lede reveal">Play with some toys I build on Claude — for fun and for career development — read a few posts, and watch what I put up. If any of it looks interesting, email me.</p>
+      <div class="cta-row reveal">
+        <a class="btn primary" href="/portfolio/">See the full lineup <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="/calendar/">⌚ Book a time</a>
+        <a class="btn ghost" href="mailto:mscottjones24@gmail.com">Email</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="stitch" aria-hidden="true"></div></div>
+
+  <!-- LINEUP -->
+  <section id="lineup">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-kicker">Batting order</span>
+      </div>
+      <h2 class="sec-title reveal">Today's Lineup</h2>
+      <p class="sec-sub reveal">Nine spots in the order — live tools, support work, and baseball math. Tap a name to step up to the plate.</p>
+
+      <div class="card reveal">
+        <div class="card-top">
+          <span>No. · Player · Side</span>
+          <span class="mono">9 batting</span>
+        </div>
+        <ul class="lineup tnum">
+          <li><a href="/llmadness/"><span class="pos">1</span><span class="player">LLMAdness</span><span class="side">Software</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/cry-wolf/"><span class="pos">2</span><span class="player">Cry Wolf</span><span class="side">Software</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/the-bullzen/"><span class="pos">3</span><span class="player">The Bullzen</span><span class="side">Software</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/box-score/"><span class="pos">4</span><span class="player">Box Score</span><span class="side">Support Ops</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/windhover/"><span class="pos">5</span><span class="player">Windhover</span><span class="side">Software</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/magic-number/"><span class="pos">6</span><span class="player">Magic Number</span><span class="side">Baseball</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/black-ink/"><span class="pos">7</span><span class="player">Black Ink</span><span class="side">Baseball</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/scouting-report/"><span class="pos">8</span><span class="player">Scouting Report</span><span class="side">Baseball</span><span class="arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="/calendar/"><span class="pos">9</span><span class="player">Calendar</span><span class="side">Book a time · Closer</span><span class="arrow" aria-hidden="true">→</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SNAPSHOTS -->
+  <section id="snapshots">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="sec-kicker">Between innings</span></div>
+      <h2 class="sec-title reveal">Seventh-Inning Snapshots</h2>
+      <p class="sec-sub reveal">Short takes, build notes, and the occasional recommendation from the dugout.</p>
+      <div class="snaps">
+        <a class="snap reveal" href="/portfolio/#recommendation">
+          <span class="tag">Recommendation</span>
+          <h3>Read the whole thing</h3>
+          <p>A longer write-up worth your at-bat.</p>
+          <span class="more">Read the whole thing →</span>
+        </a>
+        <a class="snap reveal" href="/box-score/">
+          <span class="tag">Support Ops</span>
+          <h3>See the support work</h3>
+          <p>How Box Score keeps the operation running.</p>
+          <span class="more">See the support work →</span>
+        </a>
+        <a class="snap reveal" href="/magic-number/">
+          <span class="tag">Baseball</span>
+          <h3>Check the standings</h3>
+          <p>Where the Magic Number sits today.</p>
+          <span class="more">Check the standings →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="stitch" aria-hidden="true" style="margin-bottom:34px;"></div>
+    <div class="foot-grid">
+      <div>
+        <div class="foot-name">Let's talk ball.</div>
+        <p class="sec-sub" style="margin-top:12px;">Interested in what I'm building here? Drop a line — I answer.</p>
+      </div>
+      <div class="foot-links">
+        <a href="mailto:mscottjones24@gmail.com">mscottjones24@gmail.com</a>
+        <a href="https://linkedin.com/in/mattjoneshtx">linkedin.com/in/mattjoneshtx</a>
+        <a href="/calendar/">Book a time →</a>
+      </div>
+    </div>
+    <div class="copyright">© Matt Jones, 2026 — A website about nothing.</div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (e) { e.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+</script>
+
+
+</body></html>
