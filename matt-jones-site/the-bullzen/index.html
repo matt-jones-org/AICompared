@@ -326,7 +326,7 @@
       <p class="eyebrow reveal">Software &nbsp;·&nbsp; Batting 3rd</p>
       <h1 class="name reveal">The Bullzen</h1>
       <p class="tagline reveal">Calm from the bullpen.</p>
-      <p class="lede reveal">The full write-up and demo land here soon — this page is warming up in the bullpen. If you want the story early, email me.</p>
+      <p class="lede reveal">Relievers slow the whole game down before the first pitch. Box breathing — in four, hold four, out four, hold four. Follow the ball, match your breath, and let the game come to you.</p>
       <div class="cta-row reveal">
         <a class="btn primary" href="/portfolio/">Back to the lineup <span aria-hidden="true">→</span></a>
         <a class="btn ghost" href="mailto:mscottjones24@gmail.com">Ask about it</a>
@@ -336,20 +336,61 @@
 
   <div class="wrap"><div class="stitch" aria-hidden="true"></div></div>
 
-  <section id="notes">
+  <section id="tool">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="sec-kicker">Game notes</span></div>
-      <h2 class="sec-title reveal">The Card</h2>
-      <div class="card reveal">
-        <div class="card-top"><span>Attribute · Detail</span><span class="mono">№ 3</span></div>
-        <ul class="roster">
-          <li><span class="k">Side</span><span class="v">Software</span></li>
-          <li><span class="k">Lineup spot</span><span class="v">3</span></li>
-          <li><span class="k">Status</span><span class="v">Warming up<small>Write-up and demo coming soon.</small></span></li>
-          <li><span class="k">Built on</span><span class="v">Claude</span></li>
-        </ul>
+      <div class="sec-head reveal"><span class="sec-kicker">The warm-up</span></div>
+      <h2 class="sec-title reveal">Find the Calm</h2>
+      <p class="sec-sub reveal">Box breathing, the reliever's reset: inhale, hold, exhale, hold — all on the same count. Press start and follow the ball. Four cycles and your heart rate has already come down.</p>
+      <div class="bz-wrap reveal">
+        <div class="bz-stage card"><div class="bz-ball" id="bz-ball"><span id="bz-phase">Ready</span></div></div>
+        <div class="bz-panel">
+          <div class="bz-count"><span class="tnum" id="bz-count">0</span><small>warm-up breaths</small></div>
+          <div><button class="btn primary" id="bz-toggle" type="button">▶ Start the warm-up</button></div>
+          <div class="bz-pace" id="bz-pace" role="group" aria-label="Pace">
+            <button class="chip" type="button" data-sec="4" aria-pressed="true">4-count</button>
+            <button class="chip" type="button" data-sec="5" aria-pressed="false">5-count</button>
+            <button class="chip" type="button" data-sec="6" aria-pressed="false">6-count</button>
+          </div>
+          <p class="bz-hint">Inhale and the ball swells; hold at the top; exhale and it settles; hold at the bottom — equal counts all the way around.</p>
+        </div>
       </div>
     </div>
+    <style>
+      .bz-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:30px}
+      @media(max-width:760px){.bz-wrap{grid-template-columns:1fr}}
+      .bz-stage{display:flex;align-items:center;justify-content:center;min-height:360px;padding:30px}
+      .bz-ball{width:180px;height:180px;border-radius:50%;background:radial-gradient(circle at 38% 32%, color-mix(in srgb, var(--card) 55%, #fff), var(--card));border:2px solid var(--stitch);display:flex;align-items:center;justify-content:center;transform:scale(.55);transition:transform .6s ease-in-out;box-shadow:var(--shadow);position:relative}
+      .bz-ball::before,.bz-ball::after{content:"";position:absolute;top:14%;bottom:14%;width:34%;border:2px solid var(--stitch);border-top:0;border-bottom:0;border-radius:50%;opacity:.45}
+      .bz-ball::before{left:12%;border-right:0}
+      .bz-ball::after{right:12%;border-left:0}
+      .bz-ball span{font-family:var(--f-display);font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:1.15rem;color:var(--ink)}
+      .bz-panel{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:8px 4px}
+      .bz-count span{font-family:var(--f-display);font-weight:800;font-size:clamp(2.4rem,7vw,3.4rem);color:var(--stitch);line-height:.9}
+      .bz-count small{display:block;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+      .bz-pace{display:flex;gap:8px;flex-wrap:wrap}
+      .bz-pace .chip{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 14px;cursor:pointer}
+      .bz-pace .chip[aria-pressed="true"]{background:var(--grass);border-color:var(--grass);color:#fff}
+      .bz-hint{font-family:var(--f-mono);font-size:.76rem;line-height:1.6;color:var(--muted);margin:0;max-width:42ch}
+    </style>
+    <script>
+    (function(){
+      var ball=document.getElementById('bz-ball'),phaseEl=document.getElementById('bz-phase'),
+          countEl=document.getElementById('bz-count'),toggle=document.getElementById('bz-toggle');
+      var PH=[['Inhale',1],['Hold',1],['Exhale',.55],['Hold',.55]];
+      var sec=4,running=false,pi=0,breaths=0,t=null;
+      function step(){
+        var p=PH[pi];
+        phaseEl.textContent=p[0];
+        ball.style.transitionDuration=(p[0]==='Hold'?0.25:sec)+'s';
+        ball.style.transform='scale('+p[1]+')';
+        t=setTimeout(function(){pi=(pi+1)%4;if(pi===0){breaths++;countEl.textContent=breaths;}step();},sec*1000);
+      }
+      function start(){running=true;toggle.textContent='⏸ Pause';pi=0;step();}
+      function stop(){running=false;toggle.textContent='▶ Start the warm-up';clearTimeout(t);phaseEl.textContent='Ready';ball.style.transitionDuration='.6s';ball.style.transform='scale(.55)';}
+      toggle.addEventListener('click',function(){running?stop():start();});
+      document.getElementById('bz-pace').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;sec=+b.dataset.sec;document.querySelectorAll('#bz-pace .chip').forEach(function(c){c.setAttribute('aria-pressed',c===b?'true':'false');});if(running){clearTimeout(t);pi=0;step();}});
+    })();
+    </script>
   </section>
 </main>
 

@@ -336,7 +336,7 @@
       <p class="eyebrow reveal">Software &nbsp;·&nbsp; Batting 1st</p>
       <h1 class="name reveal">LLMAdness</h1>
       <p class="tagline reveal">Bracket-style madness for language models.</p>
-      <p class="lede reveal">Models face off head to head until one cuts down the net. The full write-up and live demo land here soon — this page is warming up in the bullpen.</p>
+      <p class="lede reveal">Eight models, single elimination, your calls. Tap a winner in each matchup to send it through — quarterfinals to a champion. Reseed the draw, or let chance pick the upsets.</p>
       <div class="cta-row reveal">
         <a class="btn primary" href="/portfolio/">Back to the lineup <span aria-hidden="true">→</span></a>
         <a class="btn ghost" href="mailto:mscottjones24@gmail.com">Ask about it</a>
@@ -346,20 +346,89 @@
 
   <div class="wrap"><div class="stitch" aria-hidden="true"></div></div>
 
-  <section id="notes">
+  <section id="tool">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="sec-kicker">Game notes</span></div>
-      <h2 class="sec-title reveal">The Card</h2>
-      <div class="card reveal">
-        <div class="card-top"><span>Attribute · Detail</span><span class="mono">№ 1</span></div>
-        <ul class="roster">
-          <li><span class="k">Side</span><span class="v">Software</span></li>
-          <li><span class="k">Lineup spot</span><span class="v">1 — Leadoff</span></li>
-          <li><span class="k">Status</span><span class="v">Warming up<small>Write-up and demo coming soon.</small></span></li>
-          <li><span class="k">Built on</span><span class="v">Claude</span></li>
-        </ul>
+      <div class="sec-head reveal"><span class="sec-kicker">The bracket</span></div>
+      <h2 class="sec-title reveal">Run the Madness</h2>
+      <p class="sec-sub reveal">Eight models seeded one through eight. Tap a name to advance it and the bracket fills to a champion. Reseed for a fresh draw, or auto-pick and let chaos choose.</p>
+      <div class="lm-bar reveal">
+        <button class="btn ghost" id="lm-shuffle" type="button">⤨ Reseed</button>
+        <button class="btn ghost" id="lm-auto" type="button">🎲 Auto-pick</button>
+        <button class="btn ghost" id="lm-reset" type="button">↺ Reset</button>
+        <span class="lm-champ" id="lm-champ"></span>
+      </div>
+      <div class="card lm-card reveal">
+        <div class="card-top"><span>Quarterfinals · Semifinals · Final</span><span class="mono" id="lm-status">Pick a winner</span></div>
+        <div class="lm-bracket" id="lm-bracket"></div>
       </div>
     </div>
+    <style>
+      .lm-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:28px}
+      .lm-champ{font-family:var(--f-display);font-weight:800;text-transform:uppercase;color:var(--stitch);letter-spacing:.02em;margin-left:auto;font-size:.95rem}
+      .lm-card{margin-top:16px}
+      .lm-bracket{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:18px;overflow-x:auto}
+      .lm-col{display:flex;flex-direction:column;justify-content:space-around;gap:14px;min-width:110px}
+      .lm-col h4{font-family:var(--f-mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 4px}
+      .lm-m{display:flex;flex-direction:column;gap:4px;border:1px solid var(--line);border-radius:6px;padding:5px;background:color-mix(in srgb,var(--paper) 45%,transparent)}
+      .lm-slot{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.01em;font-size:.85rem;padding:8px 10px;border:0;border-radius:4px;background:transparent;color:var(--ink);text-align:left;cursor:pointer;width:100%}
+      .lm-slot:disabled{color:color-mix(in srgb,var(--muted) 55%,transparent);cursor:default}
+      .lm-slot:not(:disabled):hover{background:color-mix(in srgb,var(--grass) 13%,transparent)}
+      .lm-slot.sel{background:var(--stitch);color:#fff}
+      .lm-champ-col{justify-content:center;align-items:center;text-align:center;gap:10px}
+      .lm-trophy{font-size:1.7rem;line-height:1}
+      .lm-winner{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:1.05rem;color:var(--stitch)}
+      .lm-tbd{font-family:var(--f-mono);font-size:.78rem;color:color-mix(in srgb,var(--muted) 70%,transparent)}
+    </style>
+    <script>
+    (function(){
+      var SEEDS=['Claude','GPT','Gemini','Llama','Mistral','Qwen','DeepSeek','Grok'];
+      var order=SEEDS.slice();
+      var picks=[[null,null,null,null],[null,null],[null]];
+      var bracket=document.getElementById('lm-bracket');
+      function comps(){
+        var r0=[];for(var i=0;i<4;i++)r0.push([order[i*2],order[i*2+1]]);
+        var r1=[[picks[0][0],picks[0][1]],[picks[0][2],picks[0][3]]];
+        var r2=[[picks[1][0],picks[1][1]]];
+        return [r0,r1,r2];
+      }
+      function validate(){
+        for(var r=0;r<3;r++){var c=comps();picks[r].forEach(function(w,i){if(w===null)return;var m=c[r][i];if(m[0]===null||m[1]===null||(w!==m[0]&&w!==m[1]))picks[r][i]=null;});}
+      }
+      function setPick(r,i,name){picks[r][i]=(picks[r][i]===name?null:name);validate();render();}
+      function render(){
+        var c=comps();bracket.innerHTML='';var labels=['Quarterfinals','Semifinals','Final'];
+        for(var r=0;r<3;r++){
+          var col=document.createElement('div');col.className='lm-col';
+          var h=document.createElement('h4');h.textContent=labels[r];col.appendChild(h);
+          c[r].forEach(function(m,i){
+            var mm=document.createElement('div');mm.className='lm-m';
+            [0,1].forEach(function(s){
+              var name=m[s];var b=document.createElement('button');b.type='button';
+              b.className='lm-slot'+(name&&picks[r][i]===name?' sel':'');
+              if(name){b.textContent=name;b.addEventListener('click',(function(rr,ii,nm){return function(){setPick(rr,ii,nm);};})(r,i,name));}
+              else{b.textContent='—';b.disabled=true;}
+              mm.appendChild(b);
+            });
+            col.appendChild(mm);
+          });
+          bracket.appendChild(col);
+        }
+        var cc=document.createElement('div');cc.className='lm-col lm-champ-col';
+        var h2=document.createElement('h4');h2.textContent='Champion';cc.appendChild(h2);
+        var champ=picks[2][0];var box=document.createElement('div');
+        box.innerHTML=champ?'<div class="lm-trophy">🏆</div><div class="lm-winner">'+champ+'</div>':'<div class="lm-tbd">TBD</div>';
+        cc.appendChild(box);bracket.appendChild(cc);
+        var made=picks[0].filter(Boolean).length+picks[1].filter(Boolean).length+picks[2].filter(Boolean).length;
+        document.getElementById('lm-status').textContent=champ?'Champion crowned':(made+' / 7 picks');
+        document.getElementById('lm-champ').textContent=champ?('🏆 '+champ+' cuts down the net'):'';
+      }
+      function clear(){picks=[[null,null,null,null],[null,null],[null]];}
+      document.getElementById('lm-shuffle').addEventListener('click',function(){for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}clear();render();});
+      document.getElementById('lm-reset').addEventListener('click',function(){clear();render();});
+      document.getElementById('lm-auto').addEventListener('click',function(){clear();for(var r=0;r<3;r++){var c=comps();c[r].forEach(function(m,i){picks[r][i]=Math.random()<0.5?m[0]:m[1];});}validate();render();});
+      render();
+    })();
+    </script>
   </section>
 </main>
 

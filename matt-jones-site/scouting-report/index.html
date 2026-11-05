@@ -326,7 +326,7 @@
       <p class="eyebrow reveal">Baseball &nbsp;·&nbsp; Batting 8th</p>
       <h1 class="name reveal">Scouting Report</h1>
       <p class="tagline reveal">Tools, grades, and projections.</p>
-      <p class="lede reveal">The 20–80 scale, applied liberally. The full report lands here soon — until then, the scouts are still in the stands with their radar guns.</p>
+      <p class="lede reveal">The scout's 20–80 scale: 50 is big-league average and every ten points is a full grade. Slide the five tools and the report writes its own Overall Future Potential and role projection.</p>
       <div class="cta-row reveal">
         <a class="btn primary" href="/portfolio/">Back to the lineup <span aria-hidden="true">→</span></a>
         <a class="btn ghost" href="/magic-number/">Try the Magic Number</a>
@@ -336,19 +336,79 @@
 
   <div class="wrap"><div class="stitch" aria-hidden="true"></div></div>
 
-  <section id="notes">
+  <section id="tool">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="sec-kicker">Game notes</span></div>
-      <h2 class="sec-title reveal">The Card</h2>
-      <div class="card reveal">
-        <div class="card-top"><span>Attribute · Detail</span><span class="mono">№ 8</span></div>
-        <ul class="roster">
-          <li><span class="k">Side</span><span class="v">Baseball</span></li>
-          <li><span class="k">Lineup spot</span><span class="v">8</span></li>
-          <li><span class="k">Status</span><span class="v">Warming up<small>The full report is coming soon.</small></span></li>
-        </ul>
+      <div class="sec-head reveal"><span class="sec-kicker">The 20–80 scale</span></div>
+      <h2 class="sec-title reveal">Grade the Tools</h2>
+      <p class="sec-sub reveal">Five tools, 20–80. Fifty is an average big-leaguer; sixty is a plus tool, an All-Star trait; seventy-plus is a star. Slide them and the Overall Future Potential and role projection update live.</p>
+      <div class="sr-grid reveal">
+        <div class="card sr-controls">
+          <div class="card-top"><span>Tool · Grade</span><span class="mono" id="sr-ofp-chip">OFP 50</span></div>
+          <div class="sr-sliders" id="sr-sliders"></div>
+        </div>
+        <div class="card sr-viz">
+          <div class="card-top"><span>The radar</span><span class="mono">20–80</span></div>
+          <div class="sr-radar"><svg id="sr-svg" viewBox="-30 0 300 260" aria-label="Tool grades radar"></svg></div>
+          <div class="sr-grade"><div class="sr-ofp tnum" id="sr-ofp">50</div><div class="sr-role" id="sr-role">Everyday regular</div></div>
+        </div>
       </div>
     </div>
+    <style>
+      .sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+      @media(max-width:760px){.sr-grid{grid-template-columns:1fr}}
+      .sr-sliders{padding:18px 20px}
+      .sr-row{margin-bottom:17px}
+      .sr-row:last-child{margin-bottom:0}
+      .sr-row .srh{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+      .sr-row .srh .nm{font-family:var(--f-display);font-size:1.05rem;color:var(--ink);letter-spacing:.01em}
+      .sr-row .srh .gd{color:var(--grass)}
+      .sr-row input[type=range]{width:100%;accent-color:var(--stitch);margin:0}
+      .sr-viz{display:flex;flex-direction:column}
+      .sr-radar{padding:16px;display:flex;justify-content:center;flex:1}
+      .sr-radar svg{width:100%;max-width:300px;height:auto}
+      .sr-grade{border-top:2px dashed var(--stitch);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+      .sr-ofp{font-family:var(--f-display);font-weight:800;font-size:clamp(2.4rem,7vw,3.4rem);line-height:.85;color:var(--stitch)}
+      .sr-role{font-family:var(--f-display);font-weight:700;text-transform:uppercase;text-align:right;font-size:1.1rem;color:var(--ink);letter-spacing:.01em}
+    </style>
+    <script>
+    (function(){
+      var TOOLS=['Hit','Power','Run','Arm','Field'],val=[50,50,50,50,50];
+      var wrap=document.getElementById('sr-sliders'),svg=document.getElementById('sr-svg');
+      var ofpEl=document.getElementById('sr-ofp'),chipEl=document.getElementById('sr-ofp-chip'),roleEl=document.getElementById('sr-role');
+      var C=120,CY=130,R=84;
+      function gr(v){if(v>=75)return'Elite';if(v>=65)return'Plus-plus';if(v>=60)return'Plus';if(v>=55)return'Above avg';if(v>=50)return'Average';if(v>=45)return'Below avg';if(v>=40)return'Fringe';if(v>=35)return'Well below';return'Poor';}
+      function role(o){if(o>=70)return'Franchise player';if(o>=65)return'Perennial All-Star';if(o>=60)return'All-Star';if(o>=55)return'First-division starter';if(o>=50)return'Everyday regular';if(o>=45)return'Second-division starter';if(o>=40)return'Bench / platoon';return'Org depth';}
+      function pt(i,rad){var a=(-90+i*72)*Math.PI/180;return [C+rad*Math.cos(a),CY+rad*Math.sin(a)];}
+      function poly(rad){return TOOLS.map(function(_,i){return pt(i,rad).join(',');}).join(' ');}
+      function sliders(){
+        wrap.innerHTML='';
+        TOOLS.forEach(function(t,i){
+          var row=document.createElement('div');row.className='sr-row';
+          row.innerHTML='<div class="srh"><span class="nm">'+t+'</span><span><b>'+val[i]+'</b> · <span class="gd" id="sr-g'+i+'">'+gr(val[i])+'</span></span></div><input type="range" min="20" max="80" step="5" value="'+val[i]+'" data-i="'+i+'" aria-label="'+t+' grade">';
+          wrap.appendChild(row);
+        });
+        wrap.querySelectorAll('input').forEach(function(inp){
+          inp.addEventListener('input',function(){val[+inp.dataset.i]=+inp.value;draw();});
+        });
+      }
+      function draw(){
+        // grade labels in sliders
+        TOOLS.forEach(function(_,i){
+          var g=document.getElementById('sr-g'+i);if(g)g.textContent=gr(val[i]);
+          var b=g&&g.parentNode.querySelector('b');if(b)b.textContent=val[i];
+        });
+        var ofp=Math.round((val.reduce(function(a,b){return a+b;},0)/5)/5)*5;
+        ofpEl.textContent=ofp;chipEl.textContent='OFP '+ofp;roleEl.textContent=role(ofp);
+        var rings='';[20,40,60,80].forEach(function(g){rings+='<polygon points="'+poly(R*(g-20)/60)+'" fill="none" stroke="var(--line)" stroke-width="1"/>';});
+        var axes='';TOOLS.forEach(function(_,i){var p=pt(i,R);axes+='<line x1="'+C+'" y1="'+CY+'" x2="'+p[0]+'" y2="'+p[1]+'" stroke="var(--line)" stroke-width="1"/>';});
+        var dpts=TOOLS.map(function(_,i){return pt(i,R*(val[i]-20)/60).join(',');}).join(' ');
+        var dots='';TOOLS.forEach(function(_,i){var p=pt(i,R*(val[i]-20)/60);dots+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.2" fill="var(--stitch)"/>';});
+        var labels='';TOOLS.forEach(function(t,i){var p=pt(i,R+20);var anc=Math.abs(p[0]-C)<6?'middle':(p[0]>C?'start':'end');labels+='<text x="'+p[0]+'" y="'+(p[1]+4)+'" text-anchor="'+anc+'" font-family="var(--f-mono)" font-size="10" letter-spacing="1" fill="var(--muted)">'+t.toUpperCase()+'</text>';});
+        svg.innerHTML=rings+axes+'<polygon points="'+dpts+'" fill="color-mix(in srgb, var(--grass) 24%, transparent)" stroke="var(--grass)" stroke-width="2"/>'+dots+labels;
+      }
+      sliders();draw();
+    })();
+    </script>
   </section>
 </main>
 

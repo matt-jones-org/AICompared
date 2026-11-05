@@ -336,7 +336,7 @@
       <p class="eyebrow reveal">Baseball &nbsp;·&nbsp; Batting 7th</p>
       <h1 class="name reveal">Black Ink</h1>
       <p class="tagline reveal">Leading the league gets printed in bold.</p>
-      <p class="lede reveal">A look at who owns the black ink — the league-leading numbers that get set in boldface on the back of the card. The full piece lands here soon.</p>
+      <p class="lede reveal">A Hall-of-Fame case measured in bold type: every season a player leads the league in a stat, that number gets printed in black ink on the back of the card. Tap the seasons led — the ink adds up and the verdict writes itself.</p>
       <div class="cta-row reveal">
         <a class="btn primary" href="/portfolio/">Back to the lineup <span aria-hidden="true">→</span></a>
         <a class="btn ghost" href="/magic-number/">Try the Magic Number</a>
@@ -346,19 +346,75 @@
 
   <div class="wrap"><div class="stitch" aria-hidden="true"></div></div>
 
-  <section id="notes">
+  <section id="tool">
     <div class="wrap">
-      <div class="sec-head reveal"><span class="sec-kicker">Game notes</span></div>
-      <h2 class="sec-title reveal">The Card</h2>
-      <div class="card reveal">
-        <div class="card-top"><span>Attribute · Detail</span><span class="mono">№ 7</span></div>
-        <ul class="roster">
-          <li><span class="k">Side</span><span class="v">Baseball</span></li>
-          <li><span class="k">Lineup spot</span><span class="v">7</span></li>
-          <li><span class="k">Status</span><span class="v">Warming up<small>The full piece is coming soon.</small></span></li>
-        </ul>
+      <div class="sec-head reveal"><span class="sec-kicker">The Black Ink Test</span></div>
+      <h2 class="sec-title reveal">Count the Bold</h2>
+      <p class="sec-sub reveal">Bill James's shorthand for greatness: lead your league in a category and that line gets set in <b>bold</b> on the back of the card. Big categories count more. Tap the seasons led — the ink adds up.</p>
+      <div class="bi-wrap reveal">
+        <div class="bi-total">
+          <div><div class="n tnum" id="bi-score">0</div><div class="lab">Black ink score</div></div>
+          <div class="bi-verdict" id="bi-verdict">Rookie ball<small>Average Hall of Famer ≈ 27</small></div>
+        </div>
+        <table class="bi">
+          <thead><tr><th>Category</th><th class="num">Weight</th><th class="num">Seasons led</th><th class="num">Ink</th></tr></thead>
+          <tbody id="bi-body"></tbody>
+        </table>
+        <button class="btn ghost bi-reset" id="bi-reset" type="button">↺ Reset the card</button>
       </div>
     </div>
+    <style>
+      .bi-wrap{margin-top:30px}
+      .bi-total{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;flex-wrap:wrap}
+      .bi-total .n{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,9vw,4rem);line-height:.9;color:var(--ink)}
+      .bi-total .lab{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+      .bi-verdict{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.01em;font-size:1.15rem;color:var(--stitch);text-align:right}
+      .bi-verdict small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.64rem;letter-spacing:.1em;color:var(--muted);margin-top:5px;text-transform:none}
+      table.bi{width:100%;border-collapse:collapse;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);overflow:hidden}
+      table.bi thead th{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:13px 18px;border-bottom:2px dashed var(--stitch)}
+      table.bi th.num,table.bi td.num{text-align:center}
+      table.bi td{padding:9px 18px;border-bottom:1px solid var(--line)}
+      table.bi tr:last-child td{border-bottom:0}
+      .bi-cat{font-family:var(--f-display);font-weight:700;text-transform:uppercase;letter-spacing:.01em;font-size:1rem}
+      .bi-wt{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+      .bi-step{display:inline-flex;align-items:center;gap:10px}
+      .bi-step button{width:30px;height:30px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:4px;font-family:var(--f-mono);font-size:1.05rem;cursor:pointer;line-height:1}
+      .bi-step button:hover{border-color:var(--stitch);color:var(--stitch)}
+      .bi-step .cnt{font-family:var(--f-mono);font-variant-numeric:tabular-nums;min-width:1.4ch;text-align:center;font-size:1rem}
+      .bi-ink{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1rem}
+      .bi-ink.lit{color:var(--ink);font-weight:700}
+      .bi-ink.zero{color:color-mix(in srgb,var(--muted) 50%,transparent)}
+      .bi-reset{margin-top:16px}
+    </style>
+    <script>
+    (function(){
+      var CATS=[['Batting average',4],['Home runs',4],['Runs batted in',4],['Runs scored',3],['Hits',3],['Slugging %',3],['Doubles',2],['Walks',2],['Stolen bases',2],['Games',1],['At-bats',1],['Triples',1]];
+      var led=CATS.map(function(){return 0});
+      var body=document.getElementById('bi-body'),scoreEl=document.getElementById('bi-score'),vEl=document.getElementById('bi-verdict');
+      function verdict(s){
+        if(s>=60)return['Cooperstown lock','First ballot, no debate'];
+        if(s>=40)return['Inner circle','Among the greats of the era'];
+        if(s>=27)return['Hall of Fame','You cleared the average bar'];
+        if(s>=20)return['All-Star résumé','Knocking on the door'];
+        if(s>=10)return['Solid regular','Led the league a few times'];
+        if(s>=1)return['A little ink','Some bold on the page'];
+        return['Rookie ball','No bold numbers yet'];
+      }
+      function render(){
+        body.innerHTML='';var total=0;
+        CATS.forEach(function(c,i){
+          var ink=led[i]*c[1];total+=ink;
+          var tr=document.createElement('tr');
+          tr.innerHTML='<td class="bi-cat">'+c[0]+'</td><td class="num bi-wt">'+c[1]+' pt'+(c[1]>1?'s':'')+'</td><td class="num"><span class="bi-step"><button type="button" data-i="'+i+'" data-d="-1" aria-label="one fewer">–</button><span class="cnt">'+led[i]+'</span><button type="button" data-i="'+i+'" data-d="1" aria-label="one more">+</button></span></td><td class="num bi-ink '+(ink?'lit':'zero')+'">'+ink+'</td>';
+          body.appendChild(tr);
+        });
+        scoreEl.textContent=total;var v=verdict(total);vEl.innerHTML=v[0]+'<small>'+v[1]+'</small>';
+      }
+      body.addEventListener('click',function(e){var b=e.target.closest('button[data-i]');if(!b)return;var i=+b.dataset.i,d=+b.dataset.d;led[i]=Math.max(0,Math.min(15,led[i]+d));render();});
+      document.getElementById('bi-reset').addEventListener('click',function(){led=CATS.map(function(){return 0});render();});
+      render();
+    })();
+    </script>
   </section>
 </main>
 
