@@ -375,7 +375,7 @@
       <p class="eyebrow reveal">First pitch &nbsp;·&nbsp; your call</p>
       <h1 class="name reveal">Book a Time</h1>
       <p class="tagline reveal">Nine innings or a quick catch — your pick.</p>
-      <p class="lede reveal">Pick a day on the calendar, choose a window, and the email writes itself — date, time, and room to say what you want to talk about. All times Central.</p>
+      <p class="lede reveal">Pick a day on the calendar, choose a window, and it drops a 30-minute hold straight onto Google Calendar with me invited — just send it and I'll confirm. Prefer email? That's the backup below. All times Central.</p>
     </div>
   </section>
 
@@ -408,7 +408,7 @@
           <button class="chip" type="button" data-win="Evening" aria-pressed="false">Evening · 5p–8p</button>
         </div>
         <div class="book-row">
-          <a class="btn primary" id="book-btn" href="mailto:mscottjones24@gmail.com?subject=Book%20a%20time">Email to book <span aria-hidden="true">→</span></a>
+          <a class="btn primary" id="book-btn" target="_blank" rel="noopener" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Matt%20Jones%20%E2%80%94%2030%20min&amp;add=mscottjones24@gmail.com">Add to Google Calendar <span aria-hidden="true">→</span></a>
           <span class="book-hint" id="book-hint">Pick a day and a window — or email cold, that works too.</span>
         </div>
       </div>
@@ -422,7 +422,7 @@
         <div class="snap reveal">
           <span class="tag">The venue</span>
           <h3>Call or coffee</h3>
-          <p>Video call by default. In Austin from October 2026? Coffee works — winner buys.</p>
+          <p>Video call by default. In TX? Coffee works — winner buys.</p>
         </div>
         <a class="snap reveal" href="mailto:mscottjones24@gmail.com">
           <span class="tag">The backup</span>
@@ -546,29 +546,41 @@
       return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
     }
 
-    function update() {
-      if (!selDate && !selWin) {
-        btn.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Book a time');
-        hint.textContent = 'Pick a day and a window — or email cold, that works too.';
-        state.textContent = 'No day picked';
-        return;
+    // Window -> start hour (Central). 30-minute hold.
+    var WIN = { Morning: 9, Afternoon: 13, Evening: 17 };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function stamp(d) {
+      return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) +
+        'T' + pad(d.getHours()) + pad(d.getMinutes()) + '00';
+    }
+    function gcalUrl() {
+      var url = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent('Matt Jones — 30 min') +
+        '&add=' + encodeURIComponent(MAIL) +
+        '&details=' + encodeURIComponent('Booked from matt-jones.org — a 30-minute call or coffee. Adjust the time if this slot does not work and send the invite; I will confirm.');
+      if (selDate && selWin) {
+        var s = new Date(selDate); s.setHours(WIN[selWin], 0, 0, 0);
+        var e = new Date(s.getTime() + 30 * 60000);
+        url += '&dates=' + stamp(s) + '/' + stamp(e) + '&ctz=America/Chicago';
       }
-      var parts = [];
-      if (selDate) parts.push(fmt(selDate));
-      if (selWin) parts.push(selWin.toLowerCase());
-      var subject = 'Book a time — ' + parts.join(', ');
-      var bodyText = 'Hi Matt,\n\nI’d like to grab 30 minutes' +
-        (selDate ? ' on ' + fmt(selDate) : '') +
-        (selWin ? ' in the ' + selWin.toLowerCase() : '') +
-        ' (Central Time). Here’s what I’d like to talk about:\n\n';
-      btn.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(bodyText);
-      hint.textContent = (selDate && selWin)
-        ? 'On the card: ' + fmt(selDate) + ', ' + selWin.toLowerCase() + ' (CT).'
-        : (selDate ? fmt(selDate) + ' — now pick a window.' : selWin + ' — now pick a day.');
-      state.textContent = selDate
-        ? MONTHS[selDate.getMonth()].slice(0, 3) + ' ' + selDate.getDate() + (selWin ? ' · ' + selWin : '')
-        : selWin || 'No day picked';
+      return url;
+    }
+
+    function update() {
+      btn.href = gcalUrl();
+      if (selDate && selWin) {
+        hint.textContent = 'Opens Google Calendar — ' + fmt(selDate) + ', ' + selWin.toLowerCase() + ' (CT), Matt invited.';
+        state.textContent = MONTHS[selDate.getMonth()].slice(0, 3) + ' ' + selDate.getDate() + ' · ' + selWin;
+      } else if (selDate) {
+        hint.textContent = fmt(selDate) + ' — pick a window to set the time, or open Calendar and choose.';
+        state.textContent = MONTHS[selDate.getMonth()].slice(0, 3) + ' ' + selDate.getDate();
+      } else if (selWin) {
+        hint.textContent = selWin + ' — pick a day to set the date, or open Calendar and choose.';
+        state.textContent = selWin;
+      } else {
+        hint.textContent = 'Pick a day and a window — the Google Calendar invite fills itself in.';
+        state.textContent = 'No day picked';
+      }
     }
 
     render(); update();
