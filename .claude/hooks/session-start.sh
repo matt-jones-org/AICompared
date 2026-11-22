@@ -30,6 +30,8 @@ fi
 # and we also dedupe against the env file so repeated SessionStart events
 # (resume/compact) don't append it more than once.
 if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -d "$HOME/.local/bin" ]; then
+  # Quoting is deliberate: $HOME is expanded now, $PATH is left literal so it is
+  # evaluated when the session sources the env file.
   path_line='case ":$PATH:" in *:"'"$HOME"'/.local/bin":*) ;; *) export PATH="'"$HOME"'/.local/bin:$PATH" ;; esac'
   if ! grep -qF -- "$path_line" "$CLAUDE_ENV_FILE" 2>/dev/null; then
     echo "$path_line" >> "$CLAUDE_ENV_FILE"

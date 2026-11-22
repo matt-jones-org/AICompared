@@ -5,6 +5,8 @@
  * development, or real environment variables in production) and exposes them
  * through a small typed API. Keys are never hardcoded — see `.env.example`.
  */
+// Side-effect import: reads .env into process.env as soon as this module loads.
+// Variables already set in the real environment take precedence over .env.
 import "dotenv/config";
 
 /** Providers AICompared knows how to talk to. */
@@ -24,7 +26,7 @@ const ENV_VAR: Record<Provider, string> = {
   cohere: "COHERE_API_KEY",
 };
 
-/** All providers, in a stable order. */
+/** All providers, in a stable order (the key order of ENV_VAR above). */
 export const PROVIDERS = Object.keys(ENV_VAR) as Provider[];
 
 /**

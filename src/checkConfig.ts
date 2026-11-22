@@ -1,7 +1,10 @@
 /**
  * Prints which provider API keys are currently configured.
  * Run with: `npm run config:check`
+ *
+ * Only reports whether each key is present; never print key values here.
  */
+// ".js" is deliberate: this is an ES module and the specifier names the emitted file.
 import { PROVIDERS, isConfigured, configuredProviders } from "./config.js";
 
 console.log("AICompared — API key status\n");
