@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matthew Scott Jones - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f8f8f8;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            border-bottom: 3px solid #3366cc;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .name {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .contact-info a {
+            color: #3366cc;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .job-entry {
+            margin-bottom: 20px;
+        }
+
+        .company-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .company-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .job-title {
+            font-style: italic;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .date-range {
+            color: #999;
+            font-size: 0.95em;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 10px 0;
+        }
+
+        li {
+            padding-left: 20px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3366cc;
+        }
+
+        a {
+            color: #3366cc;
+            text-decoration: none;
+            border-bottom: 1px dotted #3366cc;
+        }
+
+        a:hover {
+            background-color: #f0f0f0;
+            text-decoration: none;
+        }
+
+        .competency-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .competency-tag {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        .summary {
+            background: #f9f9f9;
+            border-left: 4px solid #3366cc;
+            padding: 15px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .education-entry {
+            margin-bottom: 15px;
+        }
+
+        .degree {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .school {
+            color: #3366cc;
+        }
+
+        .location {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+            text-align: center;
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .highlight {
+            font-weight: 500;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .name {
+                font-size: 2em;
+            }
+
+            .company-title {
+                flex-direction: column;
+            }
+
+            .date-range {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="name">Matthew Scott Jones</div>
+            <div class="title">Technical Support Specialist | AI-Enabled Workflows | Escalation Management</div>
+            <div class="contact-info">
+                <a href="https://www.google.com/maps/place/Houston,+TX">Houston, TX</a> |
+                (713) 824-6629 |
+                <a href="mailto:mscottjones24@gmail.com">mscottjones24@gmail.com</a> |
+                <a href="https://www.linkedin.com/in/mattjoneshtx/" target="_blank">LinkedIn</a> |
+                <a href="https://matt-jones.org" target="_blank">matt-jones.org</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Professional Summary</h2>
+            <div class="summary">
+                Support Specialist with <span class="highlight">6+ years</span> delivering exceptional omnichannel support — phone, live chat, and email — for individuals and clients ranging from <a href="https://en.wikipedia.org/wiki/Small_business" target="_blank">SMB</a> to enterprise. Spent the last 4 years at <a href="https://www.mavenclinic.com/" target="_blank">Maven Clinic</a> delivering <a href="https://en.wikipedia.org/wiki/B2B_e-commerce" target="_blank">B2B SaaS</a> support on a <span class="highlight">24/7</span> healthcare-technology platform in fast-paced, deadline-driven environments. Deep expertise in order and account support, escalation and rush-request management, and cross-departmental coordination, with a <span class="highlight">98%+ CSAT</span> record, consistent <a href="https://en.wikipedia.org/wiki/Service-level_agreement" target="_blank">SLA</a> adherence, and repeated top-performer rankings. Pairs frontline support with data analysis — building the dashboards, reports, and statistical models that turn support signals into better decisions. Meticulous with data entry, records, and reporting; builds the macros, SOPs, and knowledge-base systems that keep service teams fast and accurate. Quick to master new tools — including <a href="https://en.wikipedia.org/wiki/Customer_relationship_management" target="_blank">CRM</a>, ticketing, and <a href="https://en.wikipedia.org/wiki/Artificial_intelligence" target="_blank">AI</a>-assisted workflows.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Core Competencies</h2>
+            <div class="competency-list">
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Customer_service" target="_blank">Customer Service</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Help_desk" target="_blank">Help Desk Support</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Call_center" target="_blank">Call Center Operations</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Escalation_management" target="_blank">Escalation Management</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Data_analysis" target="_blank">Data Analysis</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Data_visualization" target="_blank">Data Visualization</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Geospatial_analysis" target="_blank">Geospatial Data</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/Relational_database" target="_blank">Relational Databases</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/API" target="_blank">API Integration</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/HIPAA" target="_blank">HIPAA Compliance</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/HTML" target="_blank">HTML</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/CSS" target="_blank">CSS</a></span>
+                <span class="competency-tag"><a href="https://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Professional Experience</h2>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name"><a href="https://www.mavenclinic.com/" target="_blank">Maven Clinic</a> — New York, NY (Remote)</span>
+                    <span class="date-range">Mar 2022 – Apr 2026</span>
+                </div>
+
+                <div class="job-title">Senior Support Associate</div>
+                <span class="date-range">Nov 2023 – Apr 2026</span>
+                <ul>
+                    <li>Served as the primary overnight escalation resource for a <span class="highlight">24/7</span> healthcare technology platform, independently resolving complex member, provider, partner, and operational issues while meeting strict <a href="https://en.wikipedia.org/wiki/Service-level_agreement" target="_blank">SLA</a> targets and tight deadlines.</li>
+                    <li>Named <span class="highlight">top Support performer</span> during 2026 Launch season — maintained 300+ customer interactions per week across live chat, email, and phone with nearly 100% customer satisfaction while managing complex escalations and self-driven projects.</li>
+                    <li>Created and optimized <span class="highlight">250+ Zendesk</span> support macros and <a href="https://en.wikipedia.org/wiki/Standard_operating_procedure" target="_blank">standard operating procedures (SOPs)</a> that improved response consistency, reduced average handle time, and accelerated ticket resolution across the Support organization.</li>
+                    <li>Served as subject matter expert for <a href="https://www.mavenclinic.com/" target="_blank">Maven Wallet</a> (benefits reimbursement product), guiding members through complex billing and reimbursement workflows.</li>
+                    <li>Mentored and coached 12+ new customer service representatives, providing guidance on complex cases, escalation handling, quality standards, and evolving platform functionality.</li>
+                    <li>Coordinated with Engineering, Product, Legal, Clinical, and Global Operations departments to resolve escalated tickets, manage urgent requests, report bugs, and deliver consistent, on-time customer outcomes.</li>
+                </ul>
+
+                <div class="job-title">Care Support Representative</div>
+                <span class="date-range">Mar 2022 – Nov 2023</span>
+                <ul>
+                    <li>Hired as the inaugural member of Maven's Overnight Support Team; managed up to 70 inbound and outbound customer interactions per day via phone, live chat, and email while maintaining <span class="highlight">98% customer satisfaction</span>.</li>
+                    <li>Guided members through platform onboarding, <a href="https://en.wikipedia.org/wiki/Benefit" target="_blank">benefit</a> navigation, and care-related services while delivering warm, empathetic, solutions-focused service.</li>
+                    <li>Investigated and resolved account, technical, billing, and operational issues, coordinating with internal stakeholders across multiple departments to close tickets accurately and quickly.</li>
+                    <li>Built customized in-person referral lists, researching and verifying local providers matched to each member's needs and preferences.</li>
+                    <li>Maintained meticulous case documentation and data entry in <a href="https://www.zendesk.com/" target="_blank">Zendesk</a> while handling sensitive <a href="https://en.wikipedia.org/wiki/HIPAA" target="_blank">HIPAA</a>-protected health information.</li>
+                </ul>
+            </div>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name">Cheer Factory FFS — Cypress, TX</span>
+                    <span class="date-range">Mar 2021 – Feb 2022</span>
+                </div>
+                <div class="job-title">Office Manager (Customer Service)</div>
+                <ul>
+                    <li>Served as first point of contact for families of 200+ active athletes, handling customer inquiries, scheduling, and account issues in person, by phone, and by email.</li>
+                    <li>Resolved billing and registration issues, processed payments and orders, and maintained accurate customer records across multiple programs.</li>
+                    <li>De-escalated customer concerns and complaints with professionalism and empathy.</li>
+                    <li>Managed high volumes of inbound calls and walk-in traffic while keeping intake, registration, and administrative processes running smoothly.</li>
+                </ul>
+            </div>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name">Outreach Strategists — Houston, TX (Hybrid)</span>
+                    <span class="date-range">Jan 2020 – Mar 2021</span>
+                </div>
+                <div class="job-title">Administrative Assistant / Support Specialist</div>
+                <ul>
+                    <li>Promoted from intern to full-time role supporting the executive assistant to the CEO of the firm.</li>
+                    <li>Led a team of 6 in building and maintaining a comprehensive contact database (<a href="https://en.wikipedia.org/wiki/Customer_relationship_management" target="_blank">CRM</a>) used for outreach, communications, and campaign operations.</li>
+                    <li>Handled high volumes of inbound and outbound calls and stakeholder communications, coordinating scheduling, project tracking, and follow-up to support campaign objectives.</li>
+                    <li>Coordinated voter outreach and volunteer engagement, communicating clearly with diverse audiences by phone and email.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Selected Projects & Achievements</h2>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name"><a href="https://matt-jones.org" target="_blank">matt-jones.org</a> — Interactive Portfolio</span>
+                    <span class="date-range">Apr 2026 – Present</span>
+                </div>
+                <ul>
+                    <li>Dedicated the past several months to mastering <a href="https://en.wikipedia.org/wiki/Artificial_intelligence" target="_blank">AI</a>-assisted development — most notably building with <a href="https://www.anthropic.com/" target="_blank">Claude</a> — and launched matt-jones.org as a live home for that work.</li>
+                    <li>Designed and shipped several interactive <a href="https://en.wikipedia.org/wiki/HTML" target="_blank">HTML</a> projects hosted on the site, spanning new interests, longtime hobbies, and career focus — each built end-to-end with <a href="https://en.wikipedia.org/wiki/Artificial_intelligence" target="_blank">AI</a>-assisted development.</li>
+                    <li><strong>Geospatial:</strong> Built a geofence <a href="https://en.wikipedia.org/wiki/Quality_assurance" target="_blank">QA</a>/<a href="https://en.wikipedia.org/wiki/Quality_control" target="_blank">QC</a> triage simulator with real <a href="https://en.wikipedia.org/wiki/Geometry" target="_blank">geometry</a> validation and a circle-vs-polygon geofencing sandbox while exploring the geospatial software space.</li>
+                    <li><strong>Baseball analytics:</strong> Created a live <a href="https://en.wikipedia.org/wiki/Major_League_Baseball" target="_blank">MLB</a> standings dashboard with <a href="https://en.wikipedia.org/wiki/Monte_Carlo_method" target="_blank">Monte Carlo</a> playoff simulations, an advanced-stats player leaderboard, and a two-player <a href="https://en.wikipedia.org/wiki/Hall_of_Fame" target="_blank">Hall of Fame</a> manager game.</li>
+                    <li><strong>Customer support:</strong> Built an interactive booking calendar that lets visitors schedule a <a href="https://en.wikipedia.org/wiki/Google_Meet" target="_blank">Google Meet</a> appointment directly from the site — updating in real time as new events are added, made possible through <a href="https://en.wikipedia.org/wiki/API" target="_blank">API</a> implementation.</li>
+                </ul>
+            </div>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name">Guru AI Implementation & Adoption — <a href="https://www.mavenclinic.com/" target="_blank">Maven Clinic</a></span>
+                    <span class="date-range">Feb 2025 – Dec 2025</span>
+                </div>
+                <ul>
+                    <li>Led Support-org adoption of <a href="https://www.guru.com/" target="_blank">Guru AI</a> as internal implementation lead and subject matter expert, quantifiably improving support team efficiency by over <span class="highlight">15%</span>.</li>
+                    <li>Hosted group training sessions and 1:1 coaching for 13 teammates, 3 managers, and 1 director, driving adoption of and confidence in <a href="https://en.wikipedia.org/wiki/Artificial_intelligence" target="_blank">AI</a>-assisted support workflows.</li>
+                    <li>Developed best practices and knowledge-management strategies that became part of the team's day-to-day operations.</li>
+                </ul>
+            </div>
+
+            <div class="job-entry">
+                <div class="company-title">
+                    <span class="company-name">CRM Implementation — <a href="https://www.salesforce.com/" target="_blank">Salesforce</a></span>
+                    <span class="date-range">Mar 2020 – Mar 2021</span>
+                </div>
+                <ul>
+                    <li>Audited the firm's legacy contact records, using multiple research resources to verify, correct, and enrich outdated information into an accurate master database.</li>
+                    <li>Fed the rebuilt database into <a href="https://www.salesforce.com/" target="_blank">Salesforce</a>, creating a relational <a href="https://en.wikipedia.org/wiki/Customer_relationship_management" target="_blank">CRM</a> that could be updated fluidly — keeping contacts, outreach, and campaign operations current in real time.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Education</h2>
+
+            <div class="education-entry">
+                <div class="degree"><a href="https://www.uh.edu/" target="_blank">University of Houston</a> — Houston, TX</div>
+                <div class="highlight">Bachelor of Science, <a href="https://en.wikipedia.org/wiki/Political_science" target="_blank">Political Science</a>; Minor in <a href="https://en.wikipedia.org/wiki/Sociology" target="_blank">Sociology</a></div>
+                <div class="location">Aug 2018 – May 2020 | Graduated Magna Cum Laude with 3.74 <a href="https://en.wikipedia.org/wiki/Grade_point_average" target="_blank">GPA</a></div>
+                <ul>
+                    <li>Capstone: Conducted an in-depth quantitative analysis of the relationship between <a href="https://en.wikipedia.org/wiki/Labor_union" target="_blank">labor unions</a> and the <a href="https://en.wikipedia.org/wiki/Middle_class" target="_blank">middle class</a>; findings were selected for presentation via <a href="https://en.wikipedia.org/wiki/Zoom_(software)" target="_blank">Zoom</a> to professors, lecturers, and TAs across the College of <a href="https://en.wikipedia.org/wiki/Liberal_arts_education" target="_blank">Liberal Arts</a> and Social Sciences (CLASS).</li>
+                    <li>Built quantitative <a href="https://en.wikipedia.org/wiki/Statistical_model" target="_blank">statistical models</a> that turned abstract concepts into concrete, measurable data — developing proxy variables to operationalize qualitative factors for causal and longitudinal analysis.</li>
+                    <li>Earned degree on accelerated 3-year program with <a href="https://en.wikipedia.org/wiki/Advanced_Placement" target="_blank">AP</a> and Dual-Credit coursework.</li>
+                    <li>Received <a href="https://en.wikipedia.org/wiki/Dean%27s_list" target="_blank">Dean's List</a> honors during each of 4 full semesters while taking 18+ hour course-loads.</li>
+                    <li>Member, <a href="https://en.wikipedia.org/wiki/Pi_Sigma_Alpha" target="_blank">Pi Sigma Alpha</a> Political Science Honor Society.</li>
+                </ul>
+            </div>
+
+            <div class="education-entry">
+                <div class="degree"><a href="https://www.lonestar.edu/" target="_blank">Lone Star College</a> — Cypress, TX</div>
+                <div class="highlight">Junior-College Coursework toward Bachelor's Degree</div>
+                <div class="location">Summer 2017 – Fall 2018 | <a href="https://en.wikipedia.org/wiki/Dean%27s_list" target="_blank">Dean's List</a> honors both semesters</div>
+                <ul>
+                    <li>Completed junior-college coursework — including summer classes — to fast-track degree completion at the <a href="https://www.uh.edu/" target="_blank">University of Houston</a>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This resume is a self-contained HTML document. Like Wikipedia, proper nouns and important topics are hyperlinked to trusted information sources. Last updated: July 2026.</p>
+        </div>
+    </div>
+</body>
+</html>
